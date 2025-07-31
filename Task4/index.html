@@ -830,12 +830,110 @@
 <p><a class="glightbox" href="../assets/task8c/ap.png" data-type="image" data-width="100%" data-height="auto" data-title="GPT1_apiKey" data-desc-position="top"><img alt="GPT1_apiKey" src="../assets/task8c/ap.png" /></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We will use the OpenAI key in Postman to generate embeddings.</p>
+<p>We will use the OpenAI key to generate embeddings.More information about OPENAI embeddings can be found at the following <a href="https://platform.openai.com/docs/api-reference/embeddings" target="_blank">link</a></p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Login to Postman</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Converting Text to Vectors - Simple Example via Google Colab</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>If you haven't installed Postman on your machine yet, you can download it from the following <a href="https://www.postman.com/downloads/" target="_blank">link</a></p>
+<ul>
+<li>Within your existing Google Colab notebook navigate to the new “Secrets” section in the sidebar.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
+<ul>
+<li>
+<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key in your .txt file). Note: The name is permanent once set. </p>
+</li>
+<li>
+<p>The list of secrets is global across all your notebooks.</p>
+</li>
+<li>
+<p>Use the “Notebook access” toggle to grant or revoke access to a secret for each notebook.</p>
+</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8c/kei.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec_created_8c" data-desc-position="top"><img alt="HF_GT_sec_created_8c" src="../assets/task8c/kei.png" /></a></p>
+<ul>
+<li>Once done lets start by installing all the necessary packages</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">dotenv</span> <span class="n">langchain</span><span class="o">-</span><span class="n">openai</span> <span class="n">chromadb</span> <span class="n">langchain_community</span>
+</code></pre></div>
+<ul>
+<li>Import all the relevant libraries</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We’ll initialize the OpenAI Embeddings model specifically text-embedding-3-large. This model will convert our text into vectors so we can do smart things like search, match, or retrieve context.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>
+<span class="n">embeddings</span><span class="o">=</span><span class="n">OpenAIEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;text-embedding-3-large&quot;</span><span class="p">)</span>
+<span class="n">embeddings</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Welcome to the basics of GenAI created by Omer Ilyas.&quot;</span>
+<span class="n">query_result</span><span class="o">=</span><span class="n">embeddings</span><span class="o">.</span><span class="n">embed_query</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">query_result</span>   
+</code></pre></div></td></tr></table></div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>At this point, we’ve successfully used OpenAI’s text-embedding-3-large model to convert our input text into a numerical embedding.This embedding is just a list of floating-point numbers that represent the meaning of the sentence in a way that machines can understand. These vectors are what power many GenAI use cases, like searching through documents, matching similar content, or retrieving the most relevant context for a question.</p>
+</div>
+<p>🧠 Storing and Retrieving Embeddings with ChromaDB</p>
+<ul>
+<li>Now, we’ll use ChromaDB to store the embeddings we just created and later retrieve information based on similarity.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ChromaDB is an open-source vector database that lets us store text as high-dimensional vectors (embeddings) and run similarity searches over them. This is a key building block in many GenAI applications such as retrieval-augmented generation (RAG), semantic search, and intelligent assistants. </p>
+<p>One of the beauties of using ChromaDB is that it allows you to build and populate your vector database at runtime, no need to pre-create schemas, tables, or indexes like in traditional databases.</p>
+</div>
+<ul>
+<li>Before storing the data in Chroma, we wrap our input text inside a document object, because "Chroma.from_documents()" expects its input to be a list of document objects and not plain strings.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_core.documents</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="n">text</span><span class="p">)]</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Now that we’ve converted our text into a Document, the next step is to store it in a vector database using ChromaDB.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">Chroma</span>
+<span class="n">db</span><span class="o">=</span><span class="n">Chroma</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span><span class="n">embeddings</span><span class="p">)</span>
+<span class="n">db</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a key part of any GenAI or RAG workflow  we need a place to store text as vectors so we can later compare new user queries against it and retrieve relevant context.</p>
+</div>
+<ul>
+<li>Now that our text is stored in ChromaDB as vectors, we can run similarity searches against it.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Retrieve the results from query vectorstore db</span>
+<span class="n">query</span><span class="o">=</span><span class="s2">&quot;who created the basics of GenAI? &quot;</span>
+<span class="n">retrieved_results</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">similarity_search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">retrieved_results</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>At this point, we’ve successfully built a simple yet powerful vector-based retrieval system using OpenAI embeddings and ChromaDB. We took a plain sentence, converted it into a high-dimensional embedding, stored it in a vector database, and then queried that database using natural language. Instead of relying on exact keywords, the system was able to understand the meaning of the question and retrieve the most relevant piece of text.
+This is the core building block of many GenAI workflows, with just a few lines of code, we've created a smart way to store and retrieve knowledge based on context and meaning.</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Converting Text to Vectors - via Postman</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>In this step, we’ll replicate what we just did programmatically but this time using Postman to manually send a request to OpenAI’s embedding API. We’ll send a piece of text and receive a vector representation (an embedding) in return. 
+If you haven't installed Postman on your machine yet, you can download it from the following <a href="https://www.postman.com/downloads/" target="_blank">link</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you are using the provided machines, Postman will already be pre-installed.</p>
@@ -880,7 +978,7 @@
 <p class="admonition-title">Note</p>
 <p>Text embedding models convert text into numerical data (embeddings) that represent the meaning of the text.</p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Inserting values in Vector Database</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Inserting values in Vector Database</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>We have a variety of databases available. In the upcoming step, let's demonstrate how to use <a href="https://www.singlestore.com/built-in-vector-database/" target="_blank">SingleStore</a> as a vector database and save our embeddings there.</p>
@@ -1039,7 +1137,7 @@ Please note: If your lab remains inactive for 20 minutes, the SingleStore databa
 <ul>
 <li>Let's now explore on how to retrive values from Vector Database</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Retrieving Values from the Vector Database</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Retrieving Values from the Vector Database</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><a class="glightbox" href="../assets/task4/st20.png" data-type="image" data-width="100%" data-height="auto" data-title="SS20" data-desc-position="top"><img alt="SS20" src="../assets/task4/st20.png" /></a></p>
@@ -1123,11 +1221,14 @@ Please note: If your lab remains inactive for 20 minutes, the SingleStore databa
 </code></pre></div>
 <p><a class="glightbox" href="../assets/task4/st22.png" data-type="image" data-width="100%" data-height="auto" data-title="SS22" data-desc-position="top"><img alt="SS22" src="../assets/task4/st22.png" /></a></p>
 <p><span class="colour" style="color:red">Note: You’ll be able to see the success of the vector database—higher scores indicate better matches for the answer.</span></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Conclusion</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Conclusion</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>In summary, vector databases allow LLMs to have long-term memory. In this section, we explored how to use embeddings and vector databases by generating embeddings with the OpenAI API through Postman. After setting up a free SingleStore account, embeddings were stored in a vector database. The process included creating an embedding for a query, searching the database, and confirming that it effectively retrieved relevant information. This demonstrated how vector databases can efficiently manage and query embeddings, making it easier to find relevant information based on the data stored.</p>
 <p><p align="right"> 👉 This concludes the task. Click the <strong>"Context Windows and Retrieval Augmented Generation (RAG) "</strong> Task on the left. </p></p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
