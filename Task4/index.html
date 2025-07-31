@@ -854,7 +854,7 @@
 <ul>
 <li>Once done lets start by installing all the necessary packages</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">dotenv</span> <span class="n">langchain</span><span class="o">-</span><span class="n">openai</span> <span class="n">chromadb</span> <span class="n">langchain_community</span>
+<div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">dotenv</span> <span class="n">langchain</span><span class="o">-</span><span class="n">openai</span> <span class="n">chromadb</span> <span class="n">langchain_community</span> <span class="n">langchain_chroma</span>
 </code></pre></div>
 <ul>
 <li>Import all the relevant libraries</li>
@@ -903,6 +903,10 @@
 <ul>
 <li>Now that we’ve converted our text into a Document, the next step is to store it in a vector database using ChromaDB.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Langchain have released a new library for chroma you can also use from langchain_chroma import Chroma</p>
+</div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">Chroma</span>
