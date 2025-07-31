@@ -889,6 +889,10 @@ or use the key provided in the .txt file</p>
 <ul>
 <li>Create a reusable chat prompt that builds a parameterized prompt with two roles (system and user). </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We will use ChatPromptTemplate.from_message as it allow us to build a full context with roles e.g systems or users</p>
+</div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -935,7 +939,164 @@ or use the key provided in the .txt file</p>
 <p class="admonition-title">Note</p>
 <p>In this step we built a simple langChain workflow that connects our prompt to an OpenAI model and returns a clean, usable output. We created a reusable chat prompt and connected it to the gpt‑4o model using a LangChain chain, allowing us to pass in any question and get a response automatically. Finally, we added an output parser to convert the model’s response into a plain string. By the end of this step, we had a working chain that can take any user input, process it through our prompt and LLM, and return a neatly formatted answer.                           </p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">UseCase-1</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Loading and Parsing Web Content with LangChain</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>In this section, we will build a retrieval pipeline using LangChain that can read information from a live webpage and answer questions based on its content</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+</div>
+<p>Log in to the lab environment using Google Colab. We highly recommend creating a new notebook in Colab for this.</p>
+<p>Please ensure that, as per the previous step, your OPENAI_API_KEY and LANGSMITH_API_KEY are already defined in your Colab Secrets and enabled for this notebook as well. </p>
+</div>
+</div>
+</div>
+<ul>
+<li>Lets start by installing all the relevant libraries</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">langchain</span> <span class="n">langchain</span><span class="o">-</span><span class="n">openai</span> <span class="n">beautifulsoup4</span> <span class="n">langchain_community</span> <span class="n">faiss</span><span class="o">-</span><span class="n">cpu</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Install relevant libraries</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">)</span>
+
+<span class="c1"># ✅ Set LangSmith tracing config as environment variables (so LangChain can read them)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_TRACING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_ENDPOINT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://api.smith.langchain.com&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_PROJECT&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;WebexOne2025&quot;</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>In this step, we’ll load a sample webpage from developer.webex.com into LangChain for processing</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_community.document_loaders</span> <span class="kn">import</span> <span class="n">WebBaseLoader</span>
+<span class="n">loader</span><span class="o">=</span><span class="n">WebBaseLoader</span><span class="p">(</span><span class="s2">&quot;https://developer.webex.com/admin/docs/api/guides/partners-guide-to-using-the-webex-apis&quot;</span><span class="p">)</span>
+<span class="n">loader</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Let's load our doc</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">docs</span><span class="o">=</span><span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">docs</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>In this step, we will break our loaded webpage into smaller, overlapping text chunks using RecursiveCharacterTextSplitter. As mentioned earlier chunking ensures the content is easier to search and retrieve later, and the overlap helps preserve context across document boundaries.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_text_splitters</span> <span class="kn">import</span> <span class="n">RecursiveCharacterTextSplitter</span>
+<span class="n">text_splitter</span><span class="o">=</span><span class="n">RecursiveCharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">documents</span><span class="o">=</span><span class="n">text_splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="n">documents</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We will now  initialize OpenAIEmbeddings, which allows us to convert each chunk  into a numerical vector and save into FAISS database</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>
+<span class="n">embeddings</span><span class="o">=</span><span class="n">OpenAIEmbeddings</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">FAISS</span>
+<span class="n">vectorstoredb</span><span class="o">=</span><span class="n">FAISS</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span><span class="n">embeddings</span><span class="p">)</span>
+<span class="n">vectorstoredb</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Let's query our database</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">## Query From a vector db</span>
+<span class="n">query</span><span class="o">=</span><span class="s2">&quot;What is a Managed Customer?&quot;</span>
+<span class="n">result</span><span class="o">=</span><span class="n">vectorstoredb</span><span class="o">.</span><span class="n">similarity_search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">page_content</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>LangChain will read our OPENAI_API_KEY from the environment and use this llm object to generate answers</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="n">llm</span><span class="o">=</span><span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>In this step, we will create a document chain that takes the retrieved documents, their text into a {context} placeholder, and then calls the LLM to produce an answer. The prompt explicitly instructs the model to answer only using the provided context, which helps keep responses grounded and reduces hallucinations</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">## Retrieval Chain, Document chain</span>
+
+<span class="kn">from</span> <span class="nn">langchain.chains.combine_documents</span> <span class="kn">import</span> <span class="n">create_stuff_documents_chain</span>
+<span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+
+<span class="n">prompt</span><span class="o">=</span><span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Answer the following question based only on the provided context:</span>
+<span class="sd">&lt;context&gt;</span>
+<span class="sd">{context}</span>
+<span class="sd">&lt;/context&gt;</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="p">)</span>
+
+<span class="n">document_chain</span><span class="o">=</span><span class="n">create_stuff_documents_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span><span class="n">prompt</span><span class="p">)</span>
+<span class="n">document_chain</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>lets now create our retriever (FAISS DB)</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">retriever</span><span class="o">=</span><span class="n">vectorstoredb</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">create_retrieval_chain</span>
+<span class="n">retrieval_chain</span><span class="o">=</span><span class="n">create_retrieval_chain</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span><span class="n">document_chain</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Lets invoke our model and get the answer</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">## Get the response form the LLM</span>
+<span class="n">response</span><span class="o">=</span><span class="n">retrieval_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span><span class="s2">&quot;What is a Managed Customer?&quot;</span><span class="p">})</span>
+<span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This concludes the section, and you should now have a clear understanding of how to create a pipeline using a retriever and invoke your chains.</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">UseCase-1</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -943,7 +1104,7 @@ or use the key provided in the .txt file</p>
 or use the Langchain API key that was provided in the .txt file</p>
 </p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Pre-requisite</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Pre-requisite</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Let's start building chatbot application using LangChain, I'll guide you through the basic steps. </p>
@@ -956,7 +1117,7 @@ or use the Langchain API key that was provided in the .txt file</p>
 <p>In this example, we'll explore the use of Langchain and Langserve, starting with the installation of essential libraries like langchain_openai, langchain, and langchain_core. We'll demonstrate how to leverage Langserve for managing large language models (LLM) operations. 
 Furthermore, I'll show you how to utilize Streamlit, a server-based application, to interactively visualize and interact with your code. Given the challenges of running Streamlit directly on Google Colab, we'll deploy NGROK to facilitate executing and accessing our code through a web interface.</p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Task 1</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Task 1</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -972,7 +1133,7 @@ Furthermore, I'll show you how to utilize Streamlit, a server-based application,
 <li>Make sure you are connected to a runtime. For this task, you can use the CPU as the runtime environment.</li>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/rungc.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_run" data-desc-position="top"><img alt="HL_Format_run" src="../assets/task8a/rungc.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Set OpenAI token</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Set OpenAI token</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -991,7 +1152,7 @@ Furthermore, I'll show you how to utilize Streamlit, a server-based application,
 </li>
 </ul>
 <p><a class="glightbox" href="../assets/task8c/kei.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec_created_8c" data-desc-position="top"><img alt="HF_GT_sec_created_8c" src="../assets/task8c/kei.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Set Langchain tokens</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Set Langchain tokens</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -1011,7 +1172,7 @@ or use the key provided in the .txt file</p>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
 <p><a class="glightbox" href="../assets/task9/key11.png" data-type="image" data-width="100%" data-height="auto" data-title="key11" data-desc-position="top"><img alt="key11" src="../assets/task9/key11.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Set NGROK</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:1"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Set NGROK</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -1034,7 +1195,7 @@ or use the key provided in the .txt file</p>
 <p><span class="colour" style="color:red"> Note: Since we are using a free NGROK account, we can only run up to 3 tunnels simultaneously. If you need to terminate any active tunnels, please use the following steps </span></p>
 <div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pkill</span> <span class="n">ngrok</span>
 </code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:1"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Configuration</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:1"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Configuration</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -1548,7 +1709,7 @@ To retrieve your Webex Bearer Token, follow the instructions in the "Pre-Requisi
 <p><a class="glightbox" href="../assets/task9/ss10.png" data-type="image" data-width="100%" data-height="auto" data-title="ss10" data-desc-position="top"><img alt="ss10" src="../assets/task9/ss10.png" /></a></p>
 <p><a class="glightbox" href="../assets/task9/ss11.png" data-type="image" data-width="100%" data-height="auto" data-title="ss11" data-desc-position="top"><img alt="ss11" src="../assets/task9/ss11.png" /></a></p>
 </details>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:1"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">UseCase-2</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:1"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">UseCase-2</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><b>Langchain - Advanced Rag - Chains and Retrievers</b></p>
@@ -1729,7 +1890,7 @@ llm=Ollama(model=&quot;llama2&quot;)
 <p><b>Summary</b></p>
 <p>In this lab, we've built an advanced Retrieval-Augmented Generation (RAG) system. The process begins with a user query, which is passed through a retrieval chain to fetch relevant documents from a vector database. These documents, along with the original query, are then processed by a Language Model (LLM) to generate a detailed and accurate response. This setup allows us to efficiently handle complex queries by combining the strengths of chains, retrieval and language models.</p>
 <p><a class="glightbox" href="../assets/task9/ss16.png" data-type="image" data-width="100%" data-height="auto" data-title="ss16" data-desc-position="top"><img alt="ss16" src="../assets/task9/ss16.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="13:1"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">UseCase-3</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="14:1"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">UseCase-3</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><b>Advanced Rag - Multisearch Agents RAG application </b></p>
