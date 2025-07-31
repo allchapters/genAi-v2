@@ -832,7 +832,7 @@
 <p class="admonition-title">Note</p>
 <p>We will use the OpenAI key to generate embeddings.More information about OPENAI embeddings can be found at the following <a href="https://platform.openai.com/docs/api-reference/embeddings" target="_blank">link</a></p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Converting Text to Vectors - Simple Example via Google Colab</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Converting Text to Vectors - Simple Example via Google Colab - OpenAI Embeddings</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -926,10 +926,64 @@
 </code></pre></div></td></tr></table></div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>At this point, we’ve successfully built a simple yet powerful vector-based retrieval system using OpenAI embeddings and ChromaDB. We took a plain sentence, converted it into a high-dimensional embedding, stored it in a vector database, and then queried that database using natural language. Instead of relying on exact keywords, the system was able to understand the meaning of the question and retrieve the most relevant piece of text.
+<p>At this point, we’ve successfully built a simple yet powerful vector-based retrieval system using OpenAI embeddings(cost associated to OpenAI) and ChromaDB. We took a plain sentence, converted it into a high-dimensional embedding, stored it in a vector database, and then queried that database using natural language. Instead of relying on exact keywords, the system was able to understand the meaning of the question and retrieve the most relevant piece of text.
 This is the core building block of many GenAI workflows, with just a few lines of code, we've created a smart way to store and retrieve knowledge based on context and meaning.</p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Converting Text to Vectors - via Postman</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Converting Text to Vectors - Simple Example via Opensource Embeddings(Huggingface)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>So far, we’ve used OpenAI embeddings, which are powerful but they come with API costs. The good news? There are many excellent open source alternatives that allow you to generate embeddings at no cost, such as Hugging Face.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you've already downloaded the .txt file provided for this lab, it contains your Hugging Face API key.If you're unsure how to retrieve or use it, please refer to the Pre-requisites section at the start of this lab.</p>
+</div>
+<ul>
+<li>Open the Google Colab notebook and navigate to the new “Secrets” section in the sidebar by clicking the "key icon”</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
+<ul>
+<li>
+<p>Click on “Add a new secret.” Enter the name example: HF_TOKEN and value of the secret. Note: The name is permanent once set. </p>
+</li>
+<li>
+<p>The list of secrets is global across all your notebooks.</p>
+</li>
+<li>
+<p>Use the “Notebook access” toggle to grant or revoke access to a secret for each notebook.</p>
+</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/addsec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec_created" data-desc-position="top"><img alt="HF_GT_sec_created" src="../assets/task8a/addsec.png" /></a></p>
+<ul>
+<li>We will start by installing python packages</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">huggingface_hub</span> <span class="n">langchain_huggingface</span> <span class="n">sentence_transformers</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Lets import the required modules</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HF_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;HF_TOKEN&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>lets use emebddings from Huggingface</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
+<span class="n">embeddings</span><span class="o">=</span><span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Lets convert our text into embeddings</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Welcome to the basics of GenAI created by Omer Ilyas.&quot;</span>
+<span class="n">query_result</span><span class="o">=</span><span class="n">embeddings</span><span class="o">.</span><span class="n">embed_query</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">query_result</span>
+</code></pre></div></td></tr></table></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Converting Text to Vectors - via Postman</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>In this step, we’ll replicate what we just did programmatically but this time using Postman to manually send a request to OpenAI’s embedding API. We’ll send a piece of text and receive a vector representation (an embedding) in return. 
@@ -978,7 +1032,7 @@ If you haven't installed Postman on your machine yet, you can download it from t
 <p class="admonition-title">Note</p>
 <p>Text embedding models convert text into numerical data (embeddings) that represent the meaning of the text.</p>
 </div>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Inserting values in Vector Database</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Inserting values in Vector Database</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>We have a variety of databases available. In the upcoming step, let's demonstrate how to use <a href="https://www.singlestore.com/built-in-vector-database/" target="_blank">SingleStore</a> as a vector database and save our embeddings there.</p>
@@ -1137,7 +1191,7 @@ Please note: If your lab remains inactive for 20 minutes, the SingleStore databa
 <ul>
 <li>Let's now explore on how to retrive values from Vector Database</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Retrieving Values from the Vector Database</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Retrieving Values from the Vector Database</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><a class="glightbox" href="../assets/task4/st20.png" data-type="image" data-width="100%" data-height="auto" data-title="SS20" data-desc-position="top"><img alt="SS20" src="../assets/task4/st20.png" /></a></p>
@@ -1221,11 +1275,14 @@ Please note: If your lab remains inactive for 20 minutes, the SingleStore databa
 </code></pre></div>
 <p><a class="glightbox" href="../assets/task4/st22.png" data-type="image" data-width="100%" data-height="auto" data-title="SS22" data-desc-position="top"><img alt="SS22" src="../assets/task4/st22.png" /></a></p>
 <p><span class="colour" style="color:red">Note: You’ll be able to see the success of the vector database—higher scores indicate better matches for the answer.</span></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Conclusion</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:1"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Conclusion</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>In summary, vector databases allow LLMs to have long-term memory. In this section, we explored how to use embeddings and vector databases by generating embeddings with the OpenAI API through Postman. After setting up a free SingleStore account, embeddings were stored in a vector database. The process included creating an embedding for a query, searching the database, and confirming that it effectively retrieved relevant information. This demonstrated how vector databases can efficiently manage and query embeddings, making it easier to find relevant information based on the data stored.</p>
 <p><p align="right"> 👉 This concludes the task. Click the <strong>"Context Windows and Retrieval Augmented Generation (RAG) "</strong> Task on the left. </p></p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
