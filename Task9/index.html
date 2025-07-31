@@ -791,33 +791,12 @@
 <summary>Langchain - UseCases</summary>
 <details class="info">
 <summary>Labs</summary>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">UseCase-1</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="admonition important">
-<p class="admonition-title">Important<p>Make sure you have created a Langchain account as explained in the "Getting Started with LangChain" section in Task1 
-or use the Langchain API key that was provided in the .txt file</p>
-</p>
-</div>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Pre-requisite</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>Let's start building chatbot application using LangChain, I'll guide you through the basic steps. </p>
-<p>With LangChain, when creating an application, you have the flexibility to use either paid LLMs or open-source LLMs. One way to integrate open-source LLMs is through Hugging Face or Ollama, but since we're focusing on LangChain, we'll explore how this can be done within its ecosystem.</p>
-<p><a class="glightbox" href="../assets/task9/G8.png" data-type="image" data-width="100%" data-height="auto" data-title="G8" data-desc-position="top"><img alt="G8" src="../assets/task9/G8.png" /></a></p>
-<p>We’ll build a chatbot using paid models (like OpenAI and Open Source models). LangChain provides modules that can seamlessly interact with both paid services and open-source models, allowing you to create versatile and powerful applications.</p>
-<p><a class="glightbox" href="../assets/task9/G7.png" data-type="image" data-width="100%" data-height="auto" data-title="G7" data-desc-position="top"><img alt="G7" src="../assets/task9/G7.png" /></a></p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>In this example, we'll explore the use of Langchain and Langserve, starting with the installation of essential libraries like langchain_openai, langchain, and langchain_core. We'll demonstrate how to leverage Langserve for managing large language models (LLM) operations. 
-Furthermore, I'll show you how to utilize Streamlit, a server-based application, to interactively visualize and interact with your code. Given the challenges of running Streamlit directly on Google Colab, we'll deploy NGROK to facilitate executing and accessing our code through a web interface.</p>
-</div>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Task 1</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Building a simple LangChain Pipelines with Prompts, Chains, and Output Parsers</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Log into the Lab Environment</p>
+<p>Log into the Lab Environment using Google Colab</p>
 </div>
 <p><a class="glightbox" href="../assets/task1/warn.png" data-type="image" data-width="100%" data-height="auto" data-title="Warn" data-desc-position="top"><img alt="Warn" src="../assets/task1/warn.png" /></a></p>
 <ul>
@@ -828,24 +807,16 @@ Furthermore, I'll show you how to utilize Streamlit, a server-based application,
 <li>Make sure you are connected to a runtime. For this task, you can use the CPU as the runtime environment.</li>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/rungc.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_run" data-desc-position="top"><img alt="HL_Format_run" src="../assets/task8a/rungc.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Set OpenAI token</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Set OpenAI token</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Skip this step and jump to "set-langchain-tokens" if you have already created the OpenAI account . If this is the first module you working with please, create an account from the <a href="https://platform.openai.com/">OpenAI official website</a>.</p>
-</div>
-<ul>
-<li>Create a new project API key by browsing to <a href="https://platform.openai.com/api-keys" target="_blank">API Keys web page</a>. Select Create new secret key. The API key is automatically generated. Save the APi Key as we will be using it in the later steps .</li>
-</ul>
-<p><a class="glightbox" href="../assets/task8c/ap.png" data-type="image" data-width="100%" data-height="auto" data-title="GPT1_apiKey" data-desc-position="top"><img alt="GPT1_apiKey" src="../assets/task8c/ap.png" /></a></p>
 <ul>
 <li>Within your existing Google Colab notebook navigate to the new “Secrets” section in the sidebar.</li>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
 <ul>
 <li>
-<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key created above). Note: The name is permanent once set. </p>
+<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key from .txt file). Note: The name is permanent once set. </p>
 </li>
 <li>
 <p>The list of secrets is global across all your notebooks.</p>
@@ -855,7 +826,7 @@ Furthermore, I'll show you how to utilize Streamlit, a server-based application,
 </li>
 </ul>
 <p><a class="glightbox" href="../assets/task8c/kei.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec_created_8c" data-desc-position="top"><img alt="HF_GT_sec_created_8c" src="../assets/task8c/kei.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Set Langchain tokens</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Set Langchain tokens</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -870,14 +841,177 @@ or use the key provided in the .txt file</p>
 <p class="admonition-title">Important</p>
 <p>You can also use the key that was sent in your .txt file</p>
 </div>
-<p><a class="glightbox" href="../assets/task9/keyls.png" data-type="image" data-width="100%" data-height="auto" data-title="key" data-desc-position="top"><img alt="key" src="../assets/task9/keyls.png" /></a></p>
-<p><a class="glightbox" href="../assets/task9/keyls1.png" data-type="image" data-width="100%" data-height="auto" data-title="key1" data-desc-position="top"><img alt="key1" src="../assets/task9/keyls1.png" /></a></p>
 <ul>
 <li>Within your existing Google Colab notebook navigate again to the new “Secrets” section in the sidebar. Click on “Add a new secret.” Enter the name example: LANGCHAIN_API_KEY and value of the secret(the API key created in Langchain). </li>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
 <p><a class="glightbox" href="../assets/task9/key11.png" data-type="image" data-width="100%" data-height="auto" data-title="key11" data-desc-position="top"><img alt="key11" src="../assets/task9/key11.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Set NGROK</label></div>
+<ul>
+<li>Let's install dependencies</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">langchain</span> <span class="n">langchain</span><span class="o">-</span><span class="n">openai</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We will load secrets from Colab and set environment variables</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">)</span>
+
+<span class="c1"># ✅ Set LangSmith tracing config as environment variables (so LangChain can read them)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_TRACING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_ENDPOINT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://api.smith.langchain.com&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_PROJECT&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;WebexOne2025&quot;</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Initialize the OpenAI chat model</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">llm</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Make a direct LLM call (quick sanity test)</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;What is generative AI?&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Create a reusable chat prompt that builds a parameterized prompt with two roles (system and user). </li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code> <span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_messages</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;You are an expert AI Engineer. Provide me answers based on the questions&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{input}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">prompt</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Create a chain as  in LangChain Chain is simply a pipeline that connects different components together example: Prompt → LLM → Output Parser</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">chain</span> <span class="o">=</span> <span class="n">prompt</span> <span class="o">|</span> <span class="n">llm</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;Can you tell me about LangSmith?&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Now lets add an output parser (normalize to plain string)</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_core.output_parsers</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+
+<span class="n">output_parser</span> <span class="o">=</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+<span class="n">chain</span> <span class="o">=</span> <span class="n">prompt</span> <span class="o">|</span> <span class="n">llm</span> <span class="o">|</span> <span class="n">output_parser</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;Can you tell me about LangSmith?&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this step we built a simple langChain workflow that connects our prompt to an OpenAI model and returns a clean, usable output. We created a reusable chat prompt and connected it to the gpt‑4o model using a LangChain chain, allowing us to pass in any question and get a response automatically. Finally, we added an output parser to convert the model’s response into a plain string. By the end of this step, we had a working chain that can take any user input, process it through our prompt and LLM, and return a neatly formatted answer.                           </p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">UseCase-1</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="admonition important">
+<p class="admonition-title">Important<p>Make sure you have created a Langchain account as explained in the "Getting Started with LangChain" section in Task1 
+or use the Langchain API key that was provided in the .txt file</p>
+</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Pre-requisite</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Let's start building chatbot application using LangChain, I'll guide you through the basic steps. </p>
+<p>With LangChain, when creating an application, you have the flexibility to use either paid LLMs or open-source LLMs. One way to integrate open-source LLMs is through Hugging Face or Ollama, but since we're focusing on LangChain, we'll explore how this can be done within its ecosystem.</p>
+<p><a class="glightbox" href="../assets/task9/G8.png" data-type="image" data-width="100%" data-height="auto" data-title="G8" data-desc-position="top"><img alt="G8" src="../assets/task9/G8.png" /></a></p>
+<p>We’ll build a chatbot using paid models (like OpenAI and Open Source models). LangChain provides modules that can seamlessly interact with both paid services and open-source models, allowing you to create versatile and powerful applications.</p>
+<p><a class="glightbox" href="../assets/task9/G7.png" data-type="image" data-width="100%" data-height="auto" data-title="G7" data-desc-position="top"><img alt="G7" src="../assets/task9/G7.png" /></a></p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In this example, we'll explore the use of Langchain and Langserve, starting with the installation of essential libraries like langchain_openai, langchain, and langchain_core. We'll demonstrate how to leverage Langserve for managing large language models (LLM) operations. 
+Furthermore, I'll show you how to utilize Streamlit, a server-based application, to interactively visualize and interact with your code. Given the challenges of running Streamlit directly on Google Colab, we'll deploy NGROK to facilitate executing and accessing our code through a web interface.</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Task 1</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Log into the Lab Environment. Please create a new Google Colab notebook. </p>
+</div>
+<p><a class="glightbox" href="../assets/task1/warn.png" data-type="image" data-width="100%" data-height="auto" data-title="Warn" data-desc-position="top"><img alt="Warn" src="../assets/task1/warn.png" /></a></p>
+<ul>
+<li>Open Google Colab and create a new notebook or use an existing one. Click on "File" &gt; "New notebook". Please refer to the <a href="../Task1/">following section</a> to create Google Colab account.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task3/gcolab.png" data-type="image" data-width="100%" data-height="auto" data-title="GCOLAB" data-desc-position="top"><img alt="GCOLAB" src="../assets/task3/gcolab.png" /></a></p>
+<ul>
+<li>Make sure you are connected to a runtime. For this task, you can use the CPU as the runtime environment.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/rungc.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_run" data-desc-position="top"><img alt="HL_Format_run" src="../assets/task8a/rungc.png" /></a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Set OpenAI token</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>Within your existing Google Colab notebook navigate to the new “Secrets” section in the sidebar.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
+<ul>
+<li>
+<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key in your .txt file). Note: The name is permanent once set. </p>
+</li>
+<li>
+<p>The list of secrets is global across all your notebooks.</p>
+</li>
+<li>
+<p>Use the “Notebook access” toggle to grant or revoke access to a secret for each notebook.</p>
+</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8c/kei.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec_created_8c" data-desc-position="top"><img alt="HF_GT_sec_created_8c" src="../assets/task8c/kei.png" /></a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Set Langchain tokens</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Make sure you have created a Langchain account as explained in the "Getting Started with LangChain" section in <a href="../Task1/">Task1</a>
+or use the key provided in the .txt file</p>
+</div>
+<ul>
+<li>Copy your Langchain Key and save it </li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You can also use the key that was sent in your .txt file</p>
+</div>
+<ul>
+<li>Within your existing Google Colab notebook navigate again to the new “Secrets” section in the sidebar. Click on “Add a new secret.” Enter the name example: LANGCHAIN_API_KEY and value of the secret(the API key created in Langchain). </li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
+<p><a class="glightbox" href="../assets/task9/key11.png" data-type="image" data-width="100%" data-height="auto" data-title="key11" data-desc-position="top"><img alt="key11" src="../assets/task9/key11.png" /></a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Set NGROK</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="admonition important">
@@ -900,7 +1034,7 @@ or use the key provided in the .txt file</p>
 <p><span class="colour" style="color:red"> Note: Since we are using a free NGROK account, we can only run up to 3 tunnels simultaneously. If you need to terminate any active tunnels, please use the following steps </span></p>
 <div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pkill</span> <span class="n">ngrok</span>
 </code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Configuration</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:1"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Configuration</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -1414,7 +1548,7 @@ To retrieve your Webex Bearer Token, follow the instructions in the "Pre-Requisi
 <p><a class="glightbox" href="../assets/task9/ss10.png" data-type="image" data-width="100%" data-height="auto" data-title="ss10" data-desc-position="top"><img alt="ss10" src="../assets/task9/ss10.png" /></a></p>
 <p><a class="glightbox" href="../assets/task9/ss11.png" data-type="image" data-width="100%" data-height="auto" data-title="ss11" data-desc-position="top"><img alt="ss11" src="../assets/task9/ss11.png" /></a></p>
 </details>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">UseCase-2</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:1"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">UseCase-2</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><b>Langchain - Advanced Rag - Chains and Retrievers</b></p>
@@ -1595,7 +1729,7 @@ llm=Ollama(model=&quot;llama2&quot;)
 <p><b>Summary</b></p>
 <p>In this lab, we've built an advanced Retrieval-Augmented Generation (RAG) system. The process begins with a user query, which is passed through a retrieval chain to fetch relevant documents from a vector database. These documents, along with the original query, are then processed by a Language Model (LLM) to generate a detailed and accurate response. This setup allows us to efficiently handle complex queries by combining the strengths of chains, retrieval and language models.</p>
 <p><a class="glightbox" href="../assets/task9/ss16.png" data-type="image" data-width="100%" data-height="auto" data-title="ss16" data-desc-position="top"><img alt="ss16" src="../assets/task9/ss16.png" /></a></p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:1"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">UseCase-3</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:1"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">UseCase-3</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><b>Advanced Rag - Multisearch Agents RAG application </b></p>
@@ -1871,6 +2005,15 @@ llm=Ollama(model=&quot;llama2&quot;)
 retriever tool, fetch AI research papers from Arxiv, and even extract insights from a Webex Calling Preferred Architecture PDF. Unlike static chains, this agent leverages a reasoning engine to decide which tool to use based on the query, making it more flexible and adaptive. Through this process, we explored key concepts such as integrating multiple data sources, utilizing vector databases for efficient retrieval, and understanding how LangChain’s toolkit enables dynamic decision making. Moving forward, we can expand this system by incorporating additional tools, optimizing retrieval strategies using retrieval augmented generation (RAG), and deploying the agent in real-world applications like customer support automation. This hands-on experience provided a
 deeper understanding of how AI agents can streamline information retrieval and decision-making in complex environments. This concludes this <b>section</b>.</p>
 <p><p align="left"> 👉 <b>This concludes the tasks for our session. The remaining tasks are optional and focus on fine-tuning LLMs. Please note: To run these tasks, you'll need an NVIDIA GPU, or if you're using Google Colab, a Pro subscription is required.</b> </p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
