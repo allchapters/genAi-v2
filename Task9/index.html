@@ -1899,7 +1899,7 @@ llm=Ollama(model=&quot;llama2&quot;)
 <p><b>Lab Configuration</b></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In this use-case, we will build a system that leverages the power of agents combined with tools to create a flexible and dynamic environment. We will create multiple tools that interact with different data sources, including:</p>
+<p>In this use case, we will build a system that leverages the power of agents combined with tools to create a flexible and dynamic environment. We will create multiple tools that interact with different data sources, including:</p>
 <ul>
 <li>
 <p>A Wikipedia-based tool for querying concise information.</p>
@@ -2166,6 +2166,163 @@ llm=Ollama(model=&quot;llama2&quot;)
 retriever tool, fetch AI research papers from Arxiv, and even extract insights from a Webex Calling Preferred Architecture PDF. Unlike static chains, this agent leverages a reasoning engine to decide which tool to use based on the query, making it more flexible and adaptive. Through this process, we explored key concepts such as integrating multiple data sources, utilizing vector databases for efficient retrieval, and understanding how LangChain’s toolkit enables dynamic decision making. Moving forward, we can expand this system by incorporating additional tools, optimizing retrieval strategies using retrieval augmented generation (RAG), and deploying the agent in real-world applications like customer support automation. This hands-on experience provided a
 deeper understanding of how AI agents can streamline information retrieval and decision-making in complex environments. This concludes this <b>section</b>.</p>
 <p><p align="left"> 👉 <b>This concludes the tasks for our session. The remaining tasks are optional and focus on fine-tuning LLMs. Please note: To run these tasks, you'll need an NVIDIA GPU, or if you're using Google Colab, a Pro subscription is required.</b> </p></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="15:1"><input checked="checked" id="__tabbed_15_1" name="__tabbed_15" type="radio" /><div class="tabbed-labels"><label for="__tabbed_15_1">Optional Task - getting started with opensource models using Groq</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>In the earlier tasks, we used OpenAI for inferencing, which delivers high-quality results but comes with associated usage costs. To access OpenAI’s APIs, you must purchase credits and add a payment method (typically a credit card) to your account. In this optional step, we introduce you to Groq, a high performance platform designed for LPU-based inferencing. LPUs (Language Processing Units) are custom-built accelerators optimized for running large language models (LLMs) at lightning speed with minimal latency. Groq offers blazing-fast inference with hosted open models like GPT-OSS, Gemma , Mistral e.t.c and it can serve as a cost-effective, credit-free alternative to traditional APIs when testing. We'll demo how to create a simple translation app using Groq to translate text from English to Spanish. This is an optional task intended to show that multiple inference platforms exist, each with its own advantages and model ecosystem. More info on Groq can be found <a href="https://console.groq.com/docs/overview" target="_blank">here.</a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="16:1"><input checked="checked" id="__tabbed_16_1" name="__tabbed_16" type="radio" /><div class="tabbed-labels"><label for="__tabbed_16_1">Lab - Simple LLM application using LCEL(Langchain Expression Language)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>Make sure you have created a Groq account by browsing to <a href="https://groq.com" target="_blank">here.</a>. Use your gmail account to create Groq account. </li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/gr1.png" data-type="image" data-width="100%" data-height="auto" data-title="ssgr1" data-desc-position="top"><img alt="ssgr1" src="../assets/task9/gr1.png" /></a></p>
+<ul>
+<li>Click on Start Building, then navigate to the API Keys section on the new page and create a key. We’ll be using it later for inferencing.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/gr2.png" data-type="image" data-width="100%" data-height="auto" data-title="ss2gr2" data-desc-position="top"><img alt="ss2gr2" src="../assets/task9/gr2.png" /></a></p>
+<p><a class="glightbox" href="../assets/task9/gr3.png" data-type="image" data-width="100%" data-height="auto" data-title="ss2gr3" data-desc-position="top"><img alt="ss2gr3" src="../assets/task9/gr3.png" /></a></p>
+<ul>
+<li>
+<p>You can view the full list of models supported by Groq <a href="https://console.groq.com/docs/models" target="_blank">here.</a>. </p>
+</li>
+<li>
+<p>We will be using the GPT-OSS-20B model for this task. However, feel free to browse the Groq model page and select any other supported model if you'd like to experiment and see how inference works with different options.</p>
+</li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/gr4.png" data-type="image" data-width="100%" data-height="auto" data-title="ss2gr4" data-desc-position="top"><img alt="ss2gr4" src="../assets/task9/gr4.png" /></a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Log in to the lab environment by opening a new notebook in Google Colab. Ensure you're connected to a runtime using a CPU as it is sufficient for this task.</p>
+</div>
+<ul>
+<li>Let’s enable the Groq API key you downloaded above, as it’s required for inferencing. In Google Colab, open the Secrets tab on the left. Click Add new secret, enter GROQ_API_KEY as the name, and paste your API key in the Value field. Once done, make sure to toggle it on to activate the key.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/gr5.png" data-type="image" data-width="100%" data-height="auto" data-title="ss2gr5" data-desc-position="top"><img alt="ss2gr5" src="../assets/task9/gr5.png" /></a></p>
+<ul>
+<li>Let's start by installing all the relevant libraries</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">langchain</span> <span class="n">langchain_groq</span> <span class="n">langchain_core</span> <span class="n">langchain_openai</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Let’s start by pulling in the API keys we saved earlier (OpenAI, Groq, and LangSmith) using Colab’s userdata, so they can be used in our code without hardcoding them. As before, we’ll also enable LangSmith tracing to help visualize and debug our LangChain runs</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LANGSMITH_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GROQ_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;GROQ_API_KEY&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># ✅ Set LangSmith tracing config as environment variables (so LangChain can read them)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_TRACING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_ENDPOINT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://api.smith.langchain.com&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LANGSMITH_PROJECT&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;WebexOne2025&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>OpenAI recently released two open-weight reasoning models (GPT-OSS-20B and GPT-OSS-120B)  under the Apache 2.0 license. These are the first open models from OpenAI since GPT-2 in 2019. The 120B model delivers strong reasoning performance and can run efficiently on a single 80 GB GPU like the NVIDIA A100. The 20B model achieves comparable performance to OpenAI’s o3-mini on common benchmarks and can run on edge devices with just 16 GB of memory. Both models support 128K context windows, making them powerful options for long-context inference tasks. More info can be found <a href="https://openai.com/index/introducing-gpt-oss/" target="_blank">here.</a> Since the GPT-OSS models are open source, there’s strong competition among providers offering hosting and usage options with different pricing and features. More info <a href="https://openrouter.ai/openai/gpt-oss-20b" target="_blank">here.</a></p>
+</div>
+<ul>
+<li>We will now set up the model for inference. We’ll be using Groq(inferencing engine) to access the newly released openai/gpt-oss-20b model. This allows us to run the model using Groq’s high-speed LPU hardware, giving us fast and cost-efficient responses for our tasks.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span> <span class="nn">langchain_groq</span> <span class="kn">import</span> <span class="n">ChatGroq</span>
+<span class="n">model</span><span class="o">=</span><span class="n">ChatGroq</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;openai/gpt-oss-20b&quot;</span><span class="p">)</span>
+<span class="n">model</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We’re creating a simple chat interaction using LangChain’s SystemMessage and HumanMessage</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_core.messages</span> <span class="kn">import</span> <span class="n">HumanMessage</span><span class="p">,</span><span class="n">SystemMessage</span>
+
+<span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Translate the following from English to Spanish&quot;</span><span class="p">),</span>
+    <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello How are you?&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">result</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+<span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We can now use StrOutputParser to extract and clean the final text output. This helps convert the structured response into a plain string we can easily read or use in downstream steps if needed.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_core.output_parsers</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+<span class="n">parser</span><span class="o">=</span><span class="n">StrOutputParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Using LCEL (LangChain Expression Language) to chain the model and output parser together into a single pipeline. This makes the code more streamlined. By running chain.invoke(messages), we send the input messages through the model and directly get the parsed output in one step.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Using LCEL- chain the components</span>
+<span class="n">chain</span><span class="o">=</span><span class="n">model</span><span class="o">|</span><span class="n">parser</span>
+<span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We will now define a prompt template using ChatPromptTemplate. The system message includes a placeholder {language}, allowing us to dynamically choose the target language. The user message includes {text}, which will be the actual sentence we want to translate. This makes our prompts flexible and reusable for different inputs</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Prompt Templates</span>
+<span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+
+<span class="n">generic_template</span><span class="o">=</span><span class="s2">&quot;Translate the following into </span><span class="si">{language}</span><span class="s2">:&quot;</span>
+
+<span class="n">prompt</span><span class="o">=</span><span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_messages</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;system&quot;</span><span class="p">,</span><span class="n">generic_template</span><span class="p">),(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">{text}</span><span class="s2">&quot;</span><span class="p">)]</span>
+<span class="p">)</span>
+<span class="n">result</span><span class="o">=</span><span class="n">prompt</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;language&quot;</span><span class="p">:</span><span class="s2">&quot;Spanish&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;Hello&quot;</span><span class="p">})</span>
+<span class="n">result</span><span class="o">.</span><span class="n">to_messages</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Chaining components using LCEL</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">##Chaining together components with LCEL</span>
+<span class="n">chain</span><span class="o">=</span><span class="n">prompt</span><span class="o">|</span><span class="n">model</span><span class="o">|</span><span class="n">parser</span>
+<span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;language&quot;</span><span class="p">:</span><span class="s2">&quot;Spanish&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;Hello&quot;</span><span class="p">})</span>
+</code></pre></div></td></tr></table></div>
+<p><b>Summary</b></p>
+<p>In this section, we built a complete translation pipeline using LangChain and Groq. We started by setting up the openai/gpt-oss-20b model on Groq’s high-speed LPU engine for fast inference. Then, we walked through creating messages, parsing outputs, and using LangChain Expression Language (LCEL) to chain components together. Finally, we introduced prompt templates to make our inputs dynamic and reusable. With everything combined, we now have a clean, modular pipeline that can translate text efficiently using a powerful open-source model.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
