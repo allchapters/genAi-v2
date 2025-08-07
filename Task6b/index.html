@@ -927,6 +927,193 @@ If you choose to log in using your own Gmail account, do not use the API key fro
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🧾 Reply to Customer:&quot;</span><span class="p">,</span> <span class="n">reply</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">LAB3 - Multilingual Customer Support Bot - USING LCEL</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<p>Now that we’ve seen how to build a multilingual support bot using Hugging Face’s OpenAI compatible API, we can combine everything we’ve learned in the previous tasks using LangChain Expression Language (LCEL) to streamline the logic. In this version, we refactor the bot to use modular LCEL chains by linking together prompt templates, the model, and an output parser using the | operator. This not only makes the code cleaner and easier to manage, but also enhances reusability, composability, and debugging. By chaining components like prompt | model | parser, we define a clear flow of data making it simple to plug in new prompts or swap out models without rewriting logic. This structure is ideal for production ready applications where consistency and maintainability are key.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Feel free to continue using the Google Colab notebook from the above task.</p>
+</div>
+<ul>
+<li>
+<p>✅ Install dependencies first (if not already installed or working with a new notebook)
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">langchain</span> <span class="n">langchain_openai</span> <span class="n">langchain_core</span> <span class="n">langdetect</span>
+</code></pre></div></td></tr></table></div></p>
+</li>
+<li>
+<p>Let's now bring everything together into a clean, modular design. This class uses Hugging Face’s OpenAI-compatible router to interact with open-source models like openai/gpt-oss-120b, and leverages LangChain’s Expression Language (LCEL) to connect prompts, models, and parsers into streamlined pipelines.</p>
+</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langdetect</span> <span class="kn">import</span> <span class="n">detect</span>
+<span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+<span class="kn">from</span> <span class="nn">langchain_core.output_parsers</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+
+<span class="k">class</span> <span class="nc">MultilingualSupportBot</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;openai/gpt-oss-120b:groq&quot;</span><span class="p">):</span>
+        <span class="c1"># Set up model using Hugging Face Router (OpenAI-compatible API)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span>
+            <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://router.huggingface.co/v1&quot;</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Output parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+
+        <span class="c1"># Prompt for translation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translation_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_messages</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;Translate the following from </span><span class="si">{source_lang}</span><span class="s2"> to </span><span class="si">{target_lang}</span><span class="s2">:&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{text}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+
+        <span class="c1"># Prompt for generating customer support reply</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_messages</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;You are a helpful customer support assistant.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;A customer said: &#39;</span><span class="si">{english_text}</span><span class="s2">&#39;. How would you respond?&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+
+        <span class="c1"># LCEL chains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translation_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translation_prompt</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_chain</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_prompt</span>     <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span>
+
+    <span class="k">def</span> <span class="nf">detect_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">lang_code</span> <span class="o">=</span> <span class="n">detect</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">lang_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;fr&quot;</span><span class="p">:</span> <span class="s2">&quot;French&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;es&quot;</span><span class="p">:</span> <span class="s2">&quot;Spanish&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;de&quot;</span><span class="p">:</span> <span class="s2">&quot;German&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;it&quot;</span><span class="p">:</span> <span class="s2">&quot;Italian&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="s2">&quot;English&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pt&quot;</span><span class="p">:</span> <span class="s2">&quot;Portuguese&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ar&quot;</span><span class="p">:</span> <span class="s2">&quot;Arabic&quot;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">lang_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">lang_code</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">translation_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span>
+            <span class="s2">&quot;source_lang&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
+            <span class="s2">&quot;target_lang&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">generate_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">english_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;english_text&quot;</span><span class="p">:</span> <span class="n">english_text</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">handle_customer_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">source_lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_language</span><span class="p">(</span><span class="n">customer_msg</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌐 Detected language: </span><span class="si">{</span><span class="n">source_lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">english_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">customer_msg</span><span class="p">,</span> <span class="n">source_lang</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔁 Translated to English: </span><span class="si">{</span><span class="n">english_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">support_reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_reply</span><span class="p">(</span><span class="n">english_text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;💬 Support reply (EN): </span><span class="si">{</span><span class="n">support_reply</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">final_reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">support_reply</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">,</span> <span class="n">source_lang</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌍 Final reply in </span><span class="si">{</span><span class="n">source_lang</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">final_reply</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_reply</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Let's  initialize it using our Hugging Face API</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Set your Hugging Face token</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;HF_TOKEN&quot;</span><span class="p">)</span>  <span class="c1"># Or paste it directly as: &quot;hf_...&quot;</span>
+
+<span class="n">bot</span> <span class="o">=</span> <span class="n">MultilingualSupportBot</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+
+<span class="c1"># Try a Spanish input</span>
+<span class="n">customer_message</span> <span class="o">=</span> <span class="s2">&quot;Hola, mi pedido no ha llegado todavía.&quot;</span>
+<span class="n">reply</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">handle_customer_message</span><span class="p">(</span><span class="n">customer_message</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🧾 Final Reply to Customer:&quot;</span><span class="p">,</span> <span class="n">reply</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
 <p><b> Summary </b></p>
 <p>In this task, we created a multilingual customer support bot using Hugging Face’s OpenAI compatible API with Groq as the inference provider. We used langdetect to auto-detect incoming message languages, translated them to English, generated contextual replies, and sent responses back in the customer’s original language all through a simple and scalable workflow.</p>
 <p>But this is just the starting point. You can extend this bot by integrating it into real-time platforms like Webex (as done in previous task) for example, by setting up a WebSocket listener that captures live chat messages, translates them on the fly, and responds back in the user’s language. This opens up powerful use cases for global support teams, real-time translation in meetings, or even AI-driven moderation across languages.</p>
