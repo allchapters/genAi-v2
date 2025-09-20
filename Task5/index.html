@@ -791,7 +791,7 @@ Conversely, if the input increases to 10,000 tokens and the response remains at 
 or  you can always insert the following command os.environ["USER_AGENT"] = "MyLangChainApp/1.0"</p>
 </div>
 <ul>
-<li>Next let’s load the data source. This is also known as “Data Ingestion”.</li>
+<li>Next let’s load the data source. This is also known as “Data Ingestion”. Make sure you copy the path where the pdf file is downloaded. </li>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">loader</span> <span class="o">=</span> <span class="n">PyMuPDFLoader</span><span class="p">(</span><span class="s2">&quot;/content/data/dect.pdf&quot;</span><span class="p">)</span>
@@ -847,9 +847,11 @@ Also we can use <a href="https://python.langchain.com/v0.2/docs/integrations/tex
 </code></pre></div></td></tr></table></div>
 <p><a class="glightbox" href="../assets/task5/o2.png" data-type="image" data-width="100%" data-height="auto" data-title="Output2" data-desc-position="top"><img alt="Output2" src="../assets/task5/o2.png" /></a></p>
 <ul>
-<li>Let's now create our prompt. There are several ways to do this, you can either craft it manually or use prompts that have already been made available on the LangChain Hub. In this section, I'll demonstrate how to pull a prompt from the LangChain Hub and use it. 
-First browse to <a href="https://smith.langchain.com/" target="_blank">Langmith</a> and create an account or use the tmedemouserX account to signin. In this example, I'll use Google to sign up for a Langsmith account, but feel free to choose the option that works best for you.</li>
+<li>Let's now create our prompt. There are several ways to do this, you can either craft it manually or use prompts that have already been made available on the LangChain Hub. In this section, I'll demonstrate how to pull a prompt from the LangChain Hub and use it. To access LangChain Hub, you'll need to use the LangChain API Key that you downloaded in the .txt file at the start of this lab.</li>
 </ul>
+<p>OR </p>
+<p>If you want to understand how to create the API key yourself, follow the steps below:
+First browse to <a href="https://smith.langchain.com/" target="_blank">Langmith</a> and create an account or use the tmedemouserX account to signin. In this example, I'll use Google to sign up for a Langsmith account, but feel free to choose the option that works best for you.</p>
 <p><a class="glightbox" href="../assets/task5/lsmith.png" data-type="image" data-width="100%" data-height="auto" data-title="Lsmith" data-desc-position="top"><img alt="Lsmith" src="../assets/task5/lsmith.png" /></a></p>
 <ul>
 <li>Create your API Key</li>
@@ -857,11 +859,11 @@ First browse to <a href="https://smith.langchain.com/" target="_blank">Langmith<
 <p><a class="glightbox" href="../assets/task5/lsmith1.png" data-type="image" data-width="100%" data-height="auto" data-title="Lsmith1" data-desc-position="top"><img alt="Lsmith1" src="../assets/task5/lsmith1.png" /></a></p>
 <p><a class="glightbox" href="../assets/task5/lsmith12.png" data-type="image" data-width="100%" data-height="auto" data-title="Lsmith12" data-desc-position="top"><img alt="Lsmith12" src="../assets/task5/lsmith12.png" /></a></p>
 <ul>
-<li>You can either enter your key in the secret folder or paste it manually here.</li>
+<li>Enter LANGCHAIN_API_KEY in the secret folder or copy in the code itself. </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can also use the key that was sent to your tmedemouserX account.</p>
+<p>You can  use the key that is in your .txt file</p>
 </div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LANGCHAIN_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PASTE-YOUR-KEY-HERE&quot;</span>
 </code></pre></div></td></tr></table></div>
