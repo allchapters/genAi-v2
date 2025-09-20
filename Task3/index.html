@@ -659,8 +659,12 @@
 <div class="tabbed-block">
 <p><a class="glightbox" href="../assets/task1/warn.png" data-type="image" data-width="100%" data-height="auto" data-title="Warn1" data-desc-position="top"><img alt="Warn1" src="../assets/task1/warn.png" /></a></p>
 <ul>
-<li>Open Google Colab and create a new notebook. Click on "File" &gt; "New notebook". Please refer to the <a href="../Task1/">following section</a> to create Google Colab account.</li>
+<li>Open  <a href="https://colab.research.google.com/" target="_blank">Google Colab</a> and create a new notebook. Click on "File" &gt; "New notebook". </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please refer to the <a href="../Task1/">following section</a> to create Google Colab account.</p>
+</div>
 <p><a class="glightbox" href="../assets/task3/gcolab.png" data-type="image" data-width="100%" data-height="auto" data-title="GCOLAB117" data-desc-position="top"><img alt="GCOLAB117" src="../assets/task3/gcolab.png" /></a></p>
 <ul>
 <li>Make sure you are connected to a runtime. For this task, you can use the CPU as the runtime environment.</li>
@@ -739,15 +743,11 @@
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
 
 <span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># seprate means you split by character</span>
 
 <span class="n">a</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">create_documents</span><span class="p">([</span><span class="n">text</span><span class="p">])</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
 <span class="n">a</span>
 </code></pre></div></td></tr></table></div>
@@ -847,7 +847,7 @@
 <a class="glightbox" href="../assets/task3/apy1.png" data-type="image" data-width="100%" data-height="auto" data-title="apt1" data-desc-position="top"><img alt="apt1" src="../assets/task3/apy1.png" /></a></p>
 <ul>
 <li>
-<p>Let's load our PDF files into Google Colab. For this example, we can use the Cisco Financial Results. Please <a download="CiscoReport.pdf" href="../assets/static/CiscoReport.pdf" target="_blank">Download the file here</a> as we will be using in the next step.</p>
+<p>Let's load our PDF files into Google Colab. For this example, we can use the Cisco Financial Results. Please <a download="CiscoReport.pdf" href="../assets/static/CiscoReport.pdf" target="_blank">Download the file here</a> as we will be using in the next step. You can open the pdf to go through the file. </p>
 </li>
 <li>
 <p>In Google Colab, click on the Folder tab. Right click and select New Folder to create a folder named "data."</p>
@@ -941,7 +941,7 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
-<li>Install relevant libraries</li>
+<li>Install relevant libraries </li>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -970,7 +970,9 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;/content/data/CiscoReport.pdf&quot;</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Make sure to use the correct PATH where you saved the downloaded file in the previous step.</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;/content/data/CiscoReport.pdf&quot;</span>
 <span class="c1"># Get elements</span>
 <span class="n">raw_pdf_elements</span> <span class="o">=</span> <span class="n">partition_pdf</span><span class="p">(</span>
     <span class="n">filename</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span>
@@ -995,7 +997,9 @@
 </code></pre></div></td></tr></table></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You'll notice that a folder called 'figures' is created, where all the extracted images are stored.</p>
+<p>You'll notice that a folder called 'figures' is created, where all the extracted images are stored.
+Also if you get a warning it's just an informational message from the unstructured library letting you know that you haven't explicitly specified a language for text processing, so it's defaulting to English.
+If you want to remove the warning and be explicit, you can pass the languages parameter like this: languages=["eng"] after the combine_text_under_n_chars=2000.</p>
 </div>
 <p><a class="glightbox" href="../assets/task3/iex.png" data-type="image" data-width="100%" data-height="auto" data-title="image_extract" data-desc-position="top"><img alt="image_extract" src="../assets/task3/iex.png" /></a></p>
 <ul>
@@ -1010,7 +1014,7 @@
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>If you've followed the lab instructions, the OpenAI API keys will be available in your demo Gmail account. That we will be using. If not, you can create an account and obtain the keys from the <a href="https://platform.openai.com/" target="_blank">OpenAI official website</a>. The below info is for information purpose only</p>
+<p>If you've followed the lab instructions, the OpenAI API keys will be available in your demo Gmail account or the .txt file you have downloaded. That we will be using. If not, you can create an account and obtain the keys from the <a href="https://platform.openai.com/" target="_blank">OpenAI official website</a>. The below info is for information purpose only</p>
 <ul>
 <li>Create a new project API key by browsing to <a href="https://platform.openai.com/api-keys" target="_blank">API Keys web page</a>. Select Create new secret key. The API key is automatically generated. Save the API Key as we will be using it in the later steps . The below API key is for reference only . Also when creating an API key run with default settings.</li>
 </ul>
@@ -1023,7 +1027,7 @@
 <p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
 <ul>
 <li>
-<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key sent to the tmedemouserX account). Note: The name is permanent once set. </p>
+<p>Click on “Add a new secret.” Enter the name example: OPENAI_API_KEY and value of the secret(the API key sent to the tmedemouserX account or the .txt file you have downloaded). Note: The name is permanent once set. </p>
 </li>
 <li>
 <p>The list of secrets is global across all your notebooks.</p>
@@ -1063,7 +1067,7 @@
 </code></pre></div></td></tr></table></div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Incorporating Secrets into Your Code - We will use it later in our lab</p>
+<p>Incorporating Secrets into your Code.  We'll use this later in the lab. Since GPT-5 was recently released, feel free to switch from GPT-4o to GPT-5.</p>
 </div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
