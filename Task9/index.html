@@ -700,17 +700,17 @@
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Make sure you have created a Langchain account as explained in the "Getting Started with LangChain" section in <a href="../Task1/">Task1</a>
-or use the key provided in the .txt file</p>
+or use the key provided in the .txt file called "LANGCHAIN API KEY"</p>
 </div>
 <ul>
 <li>Copy your Langchain Key and save it </li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>You can also use the key that was sent in your .txt file</p>
+<p>You can  use the key that was sent in your .txt file</p>
 </div>
 <ul>
-<li>Within your existing Google Colab notebook navigate again to the new “Secrets” section in the sidebar. Click on “Add a new secret.” Enter the name example: LANGCHAIN_API_KEY and value of the secret(the API key created in Langchain). </li>
+<li>Within your existing Google Colab notebook navigate again to the new “Secrets” section in the sidebar. Click on “Add a new secret.” Enter the name example: LANGSMITH_API_KEY and value of the secret(the API key created in Langchain or the one from your .txt file). </li>
 </ul>
 <p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
 <p><a class="glightbox" href="../assets/task9/key11.png" data-type="image" data-width="100%" data-height="auto" data-title="key11" data-desc-position="top"><img alt="key11" src="../assets/task9/key11.png" /></a></p>
@@ -754,8 +754,25 @@ or use the key provided in the .txt file</p>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;What is generative AI?&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Now that we've made a call using the llm.invoke() method, LangSmith is actively tracing our request. This is useful for tracking and observing the flow of requests, responses, and any issues that might arise during execution. LangSmith can also be used for advanced debugging and logging.</p>
+<p><b> What is Langsmith?</b></p>
+<p>LangSmith is a tool integrated into LangChain that provides observability and traceability for LLMs (Large Language Models). It helps in tracking how data flows through different models, debugging issues, and analyzing model performance. LangSmith automatically captures and logs key information, such as the input, output, response time, and any intermediate steps or API calls made. It is especially useful in production systems to ensure everything is running smoothly.By logging the above API request (llm.invoke("What is generative AI?")), LangSmith will allow us to inspect and track it in detail. You'll be able to see both the input and the response from the model, any errors, and other diagnostic information in real time.</p>
+<p>After invoking the llm.invoke() call, we can head over to the <a href="https://smith.langchain.com/" target="_blank">LangSmith dashboard</a> to see the recorded trace.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure to log in using the Gmail option and select the account you used in Phase 1 (for example, tmedemouserX@gmail.com, where X corresponds to the number you chose when picking your account). Why is this important? The LangSmith API key you'll be using is tied to this account. If you’d like to use a different Gmail account, remember to replace the LangSmith API key in the earlier steps to match the new account. It might take a few minutes for the LangSmith logs to show up on the website, so be patient if they don’t appear immediately.</p>
+</div>
+<p>Once logged in, click on the Tracing Projects tab in the sidebar. Here, you’ll see a list of all recent traces recorded by your LangChain application, including the project you created earlier, WebexOne2025, and the trace corresponding to the request you just made with the question: "What is generative AI?".</p>
+<p><a class="glightbox" href="../assets/task9/key11a.png" data-type="image" data-width="100%" data-height="auto" data-title="key11a" data-desc-position="top"><img alt="key11a" src="../assets/task9/key11a.png" /></a></p>
+<p><a class="glightbox" href="../assets/task9/key11b.png" data-type="image" data-width="100%" data-height="auto" data-title="key11b" data-desc-position="top"><img alt="key11b" src="../assets/task9/key11b.png" /></a></p>
+<p>LangSmith also provides performance metrics such as response time, memory usage, cost  and any errors that occurred during the execution. This is helpful for debugging or optimizing model performance.</p>
+<p><a class="glightbox" href="../assets/task9/key11c.png" data-type="image" data-width="100%" data-height="auto" data-title="key11c" data-desc-position="top"><img alt="key11c" src="../assets/task9/key11c.png" /></a></p>
+<p>Now that you understand the basics of LangSmith, you can continue experimenting with other LangChain models, adjust your tracing configurations, and analyze how your models behave with different inputs. The LangSmith platform gives you detailed insights that can help you fine tune your application and improve performance.</p>
+</div>
 <ul>
-<li>Create a reusable chat prompt that builds a parameterized prompt with two roles (system and user). </li>
+<li>Now lets create a reusable chat prompt that builds a parameterized prompt with two roles (system and user). </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -778,7 +795,7 @@ or use the key provided in the .txt file</p>
 <span class="n">prompt</span>
 </code></pre></div></td></tr></table></div>
 <ul>
-<li>Create a chain as  in LangChain Chain is simply a pipeline that connects different components together example: Prompt → LLM → Output Parser</li>
+<li>Create a chain in LangChain using LCEL(Lang chain expression language). Traditionally, we’d have to write custom Python classes or functions to chain steps together. With LCEL, you can quickly build a workflow like Prompt → LLM → Output Parser. More info on LCEL can be found <a href="https://python.langchain.com/docs/concepts/lcel/" target="_blank">here.</a></li>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -803,6 +820,10 @@ or use the key provided in the .txt file</p>
 <span class="n">response</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;Can you tell me about LangSmith?&quot;</span><span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
+<ul>
+<li>We can browse or log in to our LangSmith portal. At the top level you see a RunnableSequence, which represents the chain you built with the | operator. Inside the run, the nodes are shown in order: ChatPromptTemplate for formatting. ChatOpenAI for the model call. StrOutputParser for clean string. The interface also shows inputs, outputs, latency, token usage, cost, and run status. </li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/key11bd.png" data-type="image" data-width="100%" data-height="auto" data-title="key11bd" data-desc-position="top"><img alt="key11bd" src="../assets/task9/key11bd.png" /></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In this step we built a simple langChain workflow that connects our prompt to an OpenAI model and returns a clean, usable output. We created a reusable chat prompt and connected it to the gpt‑4o model using a LangChain chain, allowing us to pass in any question and get a response automatically. Finally, we added an output parser to convert the model’s response into a plain string. By the end of this step, we had a working chain that can take any user input, process it through our prompt and LLM, and return a neatly formatted answer.                           </p>
@@ -813,9 +834,9 @@ or use the key provided in the .txt file</p>
 <p>In this section, we will build a retrieval pipeline using LangChain that can read information from a live webpage and answer questions based on its content</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-</div>
 <p>Log in to the lab environment using Google Colab. We highly recommend creating a new notebook in Colab for this.</p>
 <p>Please ensure that, as per the previous step, your OPENAI_API_KEY and LANGSMITH_API_KEY are already defined in your Colab Secrets and enabled for this notebook as well. </p>
+</div>
 </div>
 </div>
 </div>
@@ -960,6 +981,10 @@ or use the key provided in the .txt file</p>
 <span class="n">response</span><span class="o">=</span><span class="n">retrieval_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span><span class="s2">&quot;What is a Managed Customer?&quot;</span><span class="p">})</span>
 <span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
+<ul>
+<li>In the LangSmith portal we can see the retrieval_chain run for the query “What is a Managed Customer?”. The retriever first searches the FAISS vector database using the embeddings we created and returns the most relevant document chunks from the Webex Partner Guide(Website). These retrieved documents are then passed into the document chain, where they are formatted into the prompt using the ChatPromptTemplate. The LLM (gpt-4o) is called with this prompt, and the output is parsed into a clean string using the StrOutputParser. The interface clearly shows the input question, the retrieved documents used as context, and the final answer generated by the LLM. It also provides runtime information such as latency, token usage, cost estimates, and run status. This trace confirms that the response was produced by grounding the LLM answer in the retrieved context, making it easy to debug.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task9/genai8a.png" data-type="image" data-width="100%" data-height="auto" data-title="genai8a" data-desc-position="top"><img alt="genai8a" src="../assets/task9/genai8a.png" /></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This concludes the section, and you should now have a clear understanding of how to create a pipeline using a retriever and invoke your chains.</p>
