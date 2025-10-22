@@ -1728,13 +1728,13 @@ To retrieve your Webex Bearer Token, follow the instructions in the "Pre-Requisi
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">llm</span><span class="o">=</span><span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<details class="note">
+<summary>Note</summary>
 <p><b>Optional</b> You can also use open source models like Ollama with the following code. Please note that this will not work in our lab since the model isn't running locally. This is for informational purposes only. If you'd like to try it locally, please speak with the proctor.</p>
 <div class="highlight"><pre><span></span><code>from langchain_community.llms import Ollama 
 llm=Ollama(model=&quot;llama2&quot;) 
 </code></pre></div>
-</div>
+</details>
 <ul>
 <li>Let's design our chat prompt templates instead of querying our database using similarity search. We'll be utilizing <a href="https://api.python.langchain.com/en/latest/prompts/langchain_core.prompts.chat.ChatPromptTemplate.html">langchain_core.prompts</a> for this purpose.</li>
 </ul>
