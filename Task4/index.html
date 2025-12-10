@@ -686,7 +686,6 @@
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>If you’ve already obtained the token in previous steps/section, you can skip this step. The OpenAI APi key should be in the .txt file you downloaded at the beginning of the lab.</p>
-</div>
 <ul>
 <li>
 <p>INFORMATION ONLY - First, create an account from the <a href="https://platform.openai.com/" target="_blank">OpenAI official website</a>.</p>
@@ -696,9 +695,10 @@
 </li>
 </ul>
 <p><a class="glightbox" href="../assets/task8c/ap.png" data-type="image" data-width="100%" data-height="auto" data-title="GPT1_apiKey" data-desc-position="top"><img alt="GPT1_apiKey" src="../assets/task8c/ap.png" /></a></p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We will use the OpenAI key to generate embeddings.More information about OPENAI embeddings can be found at the following <a href="https://platform.openai.com/docs/api-reference/embeddings" target="_blank">link</a></p>
+<p>We will use the OpenAI key to generate embeddings. More information about OPENAI embeddings can be found at the following <a href="https://platform.openai.com/docs/api-reference/embeddings" target="_blank">link</a></p>
 </div>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Converting Text to Vectors - Simple Example via Google Colab - OpenAI Embeddings</label></div>
 <div class="tabbed-content">
@@ -851,7 +851,7 @@ This is the core building block of many GenAI workflows, with just a few lines o
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HF_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;HF_TOKEN&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <ul>
-<li>lets use emebddings from Huggingface</li>
+<li>lets use emebddings from Huggingface.  More info on Huggingface embeddings can be found <a href="https://docs.langchain.com/oss/python/integrations/text_embedding/index#all-embedding-models" target="_blank">here</a>.</li>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
