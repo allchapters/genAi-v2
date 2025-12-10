@@ -1,0 +1,1144 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Webex and GenAI">
+      
+      
+        <meta name="author" content="Omer Ilyas">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.2.7">
+    
+    
+      
+        <title>Task 5: File Search using Gemini Online Retrieval Augmented Generation (RAG) - Collaboration - Technical Marketing Engineering</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#task-5-file-search-using-gemini-online-retrieval-augmented-generation-rag" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Collaboration - Technical Marketing Engineering" class="md-header__button md-logo" aria-label="Collaboration - Technical Marketing Engineering" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Collaboration - Technical Marketing Engineering
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Task 5: File Search using Gemini Online Retrieval Augmented Generation (RAG)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../overview/" class="md-tabs__link">
+          
+  
+    
+  
+  Lab
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Collaboration - Technical Marketing Engineering" class="md-nav__button md-logo" aria-label="Collaboration - Technical Marketing Engineering" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Collaboration - Technical Marketing Engineering
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Lab
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 1  - Pre-Requisites and Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 2  - AI/ML Revolution Unveiled
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task3/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 3  - Tokenization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 4  - Embeddings and Vector Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 5  - Context Windows and Retrieval Augmented Generation (RAG)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 6  - Multimodal RAG
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task9/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 6a  - GenAI Frameworks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Task6b/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task 6b  - Hugging Face with OpenAI-Compatible APIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conclusion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conclusion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="task-5-file-search-using-gemini-online-retrieval-augmented-generation-rag">Task 5: File Search using Gemini Online Retrieval Augmented Generation (RAG)</h1>
+<details class="blank" open="open">
+<summary>File Search using Gemini</summary>
+<details class="info">
+<summary>Introduction</summary>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Introduction</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><a class="glightbox" href="../assets/task5a/gem.png" data-type="image" data-width="100%" data-height="auto" data-title="CW" data-desc-position="top"><img alt="CW" src="../assets/task5a/gem.png" /></a></p>
+<p>Google have introduced a new File Search Tool, a fully managed RAG service built into the Gemini API that can be called with a single API example:https://generativelanguage.googleapis.com/v1beta/fileSearchStores. <a href="https://ai.google.dev/api/file-search/file-search-stores" target="_blank">More info can be found here</a>. </p>
+<p><a class="glightbox" href="../assets/task5a/searTool.png" data-type="image" data-width="100%" data-height="auto" data-title="ToolG" data-desc-position="top"><img alt="ToolG" src="../assets/task5a/searTool.png" /></a></p>
+<p>In the earlier tasks, we learned how to build our own RAG pipeline using LangChain and vector stores, which gives us a lot of flexibility and control. With Gemini File Search, we now have another option: a managed RAG service where Google handles chunking, indexing, embeddings, and retrieval for us. Instead of replacing the old approach, this simply gives us a choice. For some use cases, building RAG yourself will still make sense for others, using Gemini File Search can reduce complexity so you can focus more on your application and AI-by-design decisions rather than the plumbing.</p>
+<p><a class="glightbox" href="../assets/task5/rag6.png" data-type="image" data-width="100%" data-height="auto" data-title="rag6" data-desc-position="top"><img alt="rag6" src="../assets/task5/rag6.png" /></a></p>
+<p>With the File Search Tool, things get much simpler. Instead of managing chunking, embeddings, and retrieval yourself, you just create a file search store and upload your documents. Gemini takes care of splitting, embedding, indexing, and retrieving the right content when you ask a question. This hides the retrieval pipeline so you can focus on your app. File Search gives you an easy, scalable way to ground Gemini on your own data, so answers are more accurate, relevant, and easier to verify. In practice, you simply upload your files, create a store, and let the API handle the rest. A nice bonus is pricing: you only pay for embeddings (depending on the embedding model you use. Default model gemini-embedding-001 at a fixed rate of $0.15 per 1 million tokens ) and for the LLM tokens that are in context. File storage and query-time embeddings are free according to Gemini documentation. For more details on embeddings and pricing, see: <a href="https://ai.google.dev/gemini-api/docs/pricing#gemini-embedding" target="_blank" rel="noopener noreferrer">More info on embeddings and pricing</a>. For more details on tokens, see: <a href="https://ai.google.dev/gemini-api/docs/tokens" target="_blank" rel="noopener noreferrer">More info on tokens</a>. </p>
+<p>At the time of writing this guide the following models support File Search: gemini-2.5-pro &amp; gemini-2.5-flash. </p>
+<p>See the notes below for the list of supported application and text file types.</p>
+<details class="note">
+<summary>Note</summary>
+<p>Supported application types
+- <code>application/dart</code>
+- <code>application/ecmascript</code>
+- <code>application/json</code>
+- <code>application/ms-java</code>
+- <code>application/msword</code>
+- <code>application/pdf</code>
+- <code>application/sql</code>
+- <code>application/typescript</code>
+- <code>application/vnd.curl</code>
+- <code>application/vnd.dart</code>
+- <code>application/vnd.ibm.secure-container</code>
+- <code>application/vnd.jupyter</code>
+- <code>application/vnd.ms-excel</code>
+- <code>application/vnd.oasis.opendocument.text</code>
+- <code>application/vnd.openxmlformats-officedocument.presentationml.presentation</code>
+- <code>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</code>
+- <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code>
+- <code>application/vnd.openxmlformats-officedocument.wordprocessingml.template</code>
+- <code>application/x-csh</code>
+- <code>application/x-hwp</code>
+- <code>application/x-hwp-v5</code>
+- <code>application/x-latex</code>
+- <code>application/x-php</code>
+- <code>application/x-powershell</code>
+- <code>application/x-sh</code>
+- <code>application/x-shellscript</code>
+- <code>application/x-tex</code>
+- <code>application/x-zsh</code>
+- <code>application/xml</code>
+- <code>application/zip</code></p>
+</details>
+<details class="note">
+<summary>Note</summary>
+<p>Supported Text File types</p>
+<ul>
+<li><code>text/1d-interleaved-parityfec</code></li>
+<li><code>text/RED</code></li>
+<li><code>text/SGML</code></li>
+<li><code>text/cache-manifest</code></li>
+<li><code>text/calendar</code></li>
+<li><code>text/cql</code></li>
+<li><code>text/cql-extension</code></li>
+<li><code>text/cql-identifier</code></li>
+<li><code>text/css</code></li>
+<li><code>text/csv</code></li>
+<li><code>text/csv-schema</code></li>
+<li><code>text/dns</code></li>
+<li><code>text/encaprtp</code></li>
+<li><code>text/enriched</code></li>
+<li><code>text/example</code></li>
+<li><code>text/fhirpath</code></li>
+<li><code>text/flexfec</code></li>
+<li><code>text/fwdred</code></li>
+<li><code>text/gff3</code></li>
+<li><code>text/grammar-ref-list</code></li>
+<li><code>text/hl7v2</code></li>
+<li><code>text/html</code></li>
+<li><code>text/javascript</code></li>
+<li><code>text/jcr-cnd</code></li>
+<li><code>text/jsx</code></li>
+<li><code>text/markdown</code></li>
+<li><code>text/mizar</code></li>
+<li><code>text/n3</code></li>
+<li><code>text/parameters</code></li>
+<li><code>text/parityfec</code></li>
+<li><code>text/php</code></li>
+<li><code>text/plain</code></li>
+<li><code>text/provenance-notation</code></li>
+<li><code>text/prs.fallenstein.rst</code></li>
+<li><code>text/prs.lines.tag</code></li>
+<li><code>text/prs.prop.logic</code></li>
+<li><code>text/raptorfec</code></li>
+<li><code>text/rfc822-headers</code></li>
+<li><code>text/rtf</code></li>
+<li><code>text/rtp-enc-aescm128</code></li>
+<li><code>text/rtploopback</code></li>
+<li><code>text/rtx</code></li>
+<li><code>text/sgml</code></li>
+<li><code>text/shaclc</code></li>
+<li><code>text/shex</code></li>
+<li><code>text/spdx</code></li>
+<li><code>text/strings</code></li>
+<li><code>text/t140</code></li>
+<li><code>text/tab-separated-values</code></li>
+<li><code>text/texmacs</code></li>
+<li><code>text/troff</code></li>
+<li><code>text/tsv</code></li>
+<li><code>text/tsx</code></li>
+<li><code>text/turtle</code></li>
+<li><code>text/ulpfec</code></li>
+<li><code>text/uri-list</code></li>
+<li><code>text/vcard</code></li>
+<li><code>text/vnd.DMClientScript</code></li>
+<li><code>text/vnd.IPTC.NITF</code></li>
+<li><code>text/vnd.IPTC.NewsML</code></li>
+<li><code>text/vnd.a</code></li>
+<li><code>text/vnd.abc</code></li>
+<li><code>text/vnd.ascii-art</code></li>
+<li><code>text/vnd.curl</code></li>
+<li><code>text/vnd.debian.copyright</code></li>
+<li><code>text/vnd.dvb.subtitle</code></li>
+<li><code>text/vnd.esmertec.theme-descriptor</code></li>
+<li><code>text/vnd.exchangeable</code></li>
+<li><code>text/vnd.familysearch.gedcom</code></li>
+<li><code>text/vnd.ficlab.flt</code></li>
+<li><code>text/vnd.fly</code></li>
+<li><code>text/vnd.fmi.flexstor</code></li>
+<li><code>text/vnd.gml</code></li>
+<li><code>text/vnd.graphviz</code></li>
+<li><code>text/vnd.hans</code></li>
+<li><code>text/vnd.hgl</code></li>
+<li><code>text/vnd.in3d.3dml</code></li>
+<li><code>text/vnd.in3d.spot</code></li>
+<li><code>text/vnd.latex-z</code></li>
+<li><code>text/vnd.motorola.reflex</code></li>
+<li><code>text/vnd.ms-mediapackage</code></li>
+<li><code>text/vnd.net2phone.commcenter.command</code></li>
+<li><code>text/vnd.radisys.msml-basic-layout</code></li>
+<li><code>text/vnd.senx.warpscript</code></li>
+<li><code>text/vnd.sosi</code></li>
+<li><code>text/vnd.sun.j2me.app-descriptor</code></li>
+<li><code>text/vnd.trolltech.linguist</code></li>
+<li><code>text/vnd.wap.si</code></li>
+<li><code>text/vnd.wap.sl</code></li>
+<li><code>text/vnd.wap.wml</code></li>
+<li><code>text/vnd.wap.wmlscript</code></li>
+<li><code>text/vtt</code></li>
+<li><code>text/wgsl</code></li>
+<li><code>text/x-asm</code></li>
+<li><code>text/x-bibtex</code></li>
+<li><code>text/x-boo</code></li>
+<li><code>text/x-c</code></li>
+<li><code>text/x-c++hdr</code></li>
+<li><code>text/x-c++src</code></li>
+<li><code>text/x-cassandra</code></li>
+<li><code>text/x-chdr</code></li>
+<li><code>text/x-coffeescript</code></li>
+<li><code>text/x-component</code></li>
+<li><code>text/x-csh</code></li>
+<li><code>text/x-csharp</code></li>
+<li><code>text/x-csrc</code></li>
+<li><code>text/x-cuda</code></li>
+<li><code>text/x-d</code></li>
+<li><code>text/x-diff</code></li>
+<li><code>text/x-dsrc</code></li>
+<li><code>text/x-emacs-lisp</code></li>
+<li><code>text/x-erlang</code></li>
+<li><code>text/x-gff3</code></li>
+<li><code>text/x-go</code></li>
+<li><code>text/x-haskell</code></li>
+<li><code>text/x-java</code></li>
+<li><code>text/x-java-properties</code></li>
+<li><code>text/x-java-source</code></li>
+<li><code>text/x-kotlin</code></li>
+<li><code>text/x-lilypond</code></li>
+<li><code>text/x-lisp</code></li>
+<li><code>text/x-literate-haskell</code></li>
+<li><code>text/x-lua</code></li>
+<li><code>text/x-moc</code></li>
+<li><code>text/x-objcsrc</code></li>
+<li><code>text/x-pascal</code></li>
+<li><code>text/x-pcs-gcd</code></li>
+<li><code>text/x-perl</code></li>
+<li><code>text/x-perl-script</code></li>
+<li><code>text/x-python</code></li>
+<li><code>text/x-python-script</code></li>
+<li><code>text/x-r-markdown</code></li>
+<li><code>text/x-rsrc</code></li>
+<li><code>text/x-rst</code></li>
+<li><code>text/x-ruby-script</code></li>
+<li><code>text/x-rust</code></li>
+<li><code>text/x-sass</code></li>
+<li><code>text/x-scala</code></li>
+<li><code>text/x-scheme</code></li>
+<li><code>text/x-script.python</code></li>
+<li><code>text/x-scss</code></li>
+<li><code>text/x-setext</code></li>
+<li><code>text/x-sfv</code></li>
+<li><code>text/x-sh</code></li>
+<li><code>text/x-siesta</code></li>
+<li><code>text/x-sos</code></li>
+<li><code>text/x-sql</code></li>
+<li><code>text/x-swift</code></li>
+<li><code>text/x-tcl</code></li>
+<li><code>text/x-tex</code></li>
+<li><code>text/x-vbasic</code></li>
+<li><code>text/x-vcalendar</code></li>
+<li><code>text/xml</code></li>
+<li><code>text/xml-dtd</code></li>
+<li><code>text/xml-external-parsed-entity</code></li>
+<li><code>text/yaml</code></li>
+</ul>
+</details>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">LAB</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Let's build a quick Gemini Retrieval Augmented Generation ("RAG") through the File Search tool application</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The File Search capability in the Gemini API is a fully managed Retrieval-Augmented Generation (RAG) feature. It takes care of storing your files, splitting them into chunks, generating embeddings, and automatically adding the most relevant context to your prompts.</p>
+<p>You might wonder if this comes with a high cost. Actually, it doesn’t. File storage and on-demand embedding generation during queries are free. You’re only charged for the initial indexing of your content, at a flat rate of $0.15 per 1 million tokens, based on the embeddings created.</p>
+<p>In this tutorial, we’ll go through the end-to-end workflow of using File Search with a Python script. You’ll learn how to:</p>
+<ol>
+<li>
+<p>Create a File Search store</p>
+</li>
+<li>
+<p>Look up an existing store by its display name</p>
+</li>
+<li>
+<p>Upload files into the store</p>
+</li>
+<li>
+<p>Use advanced upload options such as custom chunking and metadata</p>
+</li>
+<li>
+<p>Run a standard RAG-style generation query</p>
+</li>
+<li>
+<p>Clean up by deleting the File Search store when you’re done</p>
+</li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In this section, we will be using a version of <a href="https://www.cisco.com/c/dam/en/us/td/docs/voice_ip_comm/cuipph/MPP/6800-DECT/deployment/CiscoDECT6800DeploymentGuide.pdf" target="_blank">Cisco DECT 6800 Deployment Guide</a>.  For the purposes of this lab, I've modified the original PDF by removing a few pages and saving it as a new file. </p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The PDF we are using in this lab can be downloaded from <a download="Geminidect.pdf" href="../assets/static/Geminidect.pdf" target="_blank">here</a></span></p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><a class="glightbox" href="../assets/task1/warn.png" data-type="image" data-width="100%" data-height="auto" data-title="Warn" data-desc-position="top"><img alt="Warn" src="../assets/task1/warn.png" /></a></p>
+</div>
+<ul>
+<li>Open Google Colab and create a new notebook. Click on "File" &gt; "New notebook". Please refer to the <a href="../Task1/">following section</a> to create Google Colab account.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task3/gcolab.png" data-type="image" data-width="100%" data-height="auto" data-title="GCOLAB" data-desc-position="top"><img alt="GCOLAB" src="../assets/task3/gcolab.png" /></a></p>
+<ul>
+<li>Make sure you are connected to a runtime. For this task, you can use the CPU as the runtime environment.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/rungc.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_run" data-desc-position="top"><img alt="HL_Format_run" src="../assets/task8a/rungc.png" /></a></p>
+<ul>
+<li>Within your existing Google Colab notebook navigate to the new “Secrets” section in the sidebar.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/gensec.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec" data-desc-position="top"><img alt="HF_GT_sec" src="../assets/task8a/gensec.png" /></a></p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<ul>
+<li>
+<p>If not already done, Click on “Add a new secret.” Enter the name example: GEMINI_API_KEY and value of the secret(the API key you downloaded). Note: The name is permanent once set. </p>
+</li>
+<li>
+<p>The list of secrets is global across all your notebooks.</p>
+</li>
+<li>
+<p>Use the “Notebook access” toggle to grant or revoke access to a secret for each notebook.</p>
+</li>
+</ul>
+</div>
+<p><a class="glightbox" href="../assets/task5a/key.png" data-type="image" data-width="100%" data-height="auto" data-title="HF_GT_sec11" data-desc-position="top"><img alt="HF_GT_sec11" src="../assets/task5a/key.png" /></a></p>
+<ul>
+<li>
+<p>Let's load our PDF files into Google Colab. For this example, we can use the <a download="Geminidect.pdf" href="../assets/static/Geminidect.pdf" target="_blank">modified DECT guide</a></p>
+</li>
+<li>
+<p>Within Google Colab, Click on Folder and create a new folder called "data"</p>
+</li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/fold.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_fold" data-desc-position="top"><img alt="HL_Format_fold" src="../assets/task8a/fold.png" /></a></p>
+<ul>
+<li>Click on [...], select Upload. Make sure you choose your Geminidect.pdf file </li>
+</ul>
+<p><a class="glightbox" href="../assets/task8a/dc_created.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_Format_fold_created" data-desc-position="top"><img alt="HL_Format_fold_created" src="../assets/task8a/dc_created.png" /></a></p>
+<p><a class="glightbox" href="../assets/task5a/Geminidect.png" data-type="image" data-width="100%" data-height="auto" data-title="HL_file_uplo" data-desc-position="top"><img alt="HL_file_uplo" src="../assets/task5a/Geminidect.png" /></a></p>
+<ul>
+<li>First let’s install the necessary Python packages. Click "Restart Session", once the below packages are installed.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">google</span><span class="o">-</span><span class="n">genai</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Before we can use Gemini File Search, we need to import a few libraries that will help us authenticate, talk to the Gemini API, and manage our files.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">genai</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">google.genai</span> <span class="kn">import</span> <span class="n">types</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We will now securely load our Gemini API key from Colab’s Secrets (via userdata) and storing it in an environment variable called GEMINI_API_KEY. This lets the rest of our
+code authenticate to the Gemini API without hard-coding the key in the notebook, which is safer and easier to manage.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Grab the key from the Secrets tab and put it into an env var</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GEMINI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GEMINI_API_KEY&quot;</span><span class="p">)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GEMINI_API_KEY&quot;</span><span class="p">])</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>A File Search Store is a persistent container for your document chunks and embeddings. It's distinct from raw file storage and can hold gigabytes of data.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Create the File Search store with an optional display name</span>
+<span class="n">file_search_store</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">file_search_stores</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Omers&quot;</span><span class="p">})</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>After creating the File Search store, we’re just printing a short confirmation message so we can see that it worked. The first line prints a label, and the second line shows the store’s internal name (its unique ID used by the API) together with its human-friendly display_name, so you can easily confirm which File Search store was just created.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Created a file search store:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">file_search_store</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">file_search_store</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Will list all the File Search stores associated with our project so we can quickly verify the one we just created exists (and see any others you already had). The loop calls client.file_search_stores.list() to fetch all stores, then prints each store’s internal name (its unique identifier for the API) alongside its human-readable display_name, giving you a simple overview of everything that’s currently available.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># ---------- You can list all the file search stores you have to verify:</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;List of file search stores:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">file_search_store</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">file_search_stores</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">file_search_store</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">file_search_store</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Now pick one of your File Search stores(the one you created earlier) and set file_search_store_name to its full resource name (use your store’s ID here, not mine), so the rest of the lab knows which store to upload files to and query against.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Pick one of your stores</span>
+<span class="n">file_search_store_name</span> <span class="o">=</span> <span class="s2">&quot;fileSearchStores/omers-j6gikclff6tr&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Change this to your own File Search store name, the one you created in the previous step.</p>
+</div>
+<ul>
+<li>Here we set the path to the PDF we want to index, and give it a friendly display name that will appear in File Search.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">pdf_path</span> <span class="o">=</span> <span class="s2">&quot;/content/data/Geminidect.pdf&quot;</span> 
+<span class="n">display_name</span> <span class="o">=</span> <span class="s2">&quot;dect.pdf&quot;</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>By default, Gemini handles chunking intelligently. However, for specific use cases you might want tighter control over how your data is split.
+You can define a chunkingConfig during upload to specify parameters like maxTokensPerChunk and maxOverlapTokens and customMetadata to attach key-value pairs to the document.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">operation</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">file_search_stores</span><span class="o">.</span><span class="n">upload_to_file_search_store</span><span class="p">(</span>
+<span class="n">file</span><span class="o">=</span><span class="n">pdf_path</span><span class="p">,</span>                          
+<span class="n">file_search_store_name</span><span class="o">=</span><span class="n">file_search_store_name</span><span class="p">,</span>
+<span class="n">config</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+    <span class="c1"># optional:</span>
+    <span class="c1"># &quot;chunking_config&quot;: {</span>
+    <span class="c1">#     &quot;white_space_config&quot;: {</span>
+    <span class="c1">#         &quot;max_tokens_per_chunk&quot;: 200,</span>
+    <span class="c1">#         &quot;max_overlap_tokens&quot;: 20,</span>
+    <span class="c1">#     }</span>
+    <span class="c1"># },</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="c1"># Wait for the upload + indexing to finish</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">operation</span><span class="o">.</span><span class="n">done</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">operations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Upload complete&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>Here we’re uploading our PDF(Geminidect) into the selected File Search store and waiting for Gemini to finish indexing it. The upload_to_file_search_store call sends the file (with the display name we set, and optional custom chunking if you uncomment that part), and it returns a long running operation. The while loop simply polls this operation every few seconds until the upload and indexing are complete. 
+Once it’s done, we print a confirmation so you know your document is now ready to be used in File Search queries.</p>
+<ul>
+<li>We’re configuring the File Search tool that the Gemini model will use. We create a Tool object with a FileSearch configuration and point it to our file_search_store_name, which tells Gemini which store (and documents) it’s allowed to search. We don’t need to manually retrieve chunks or run separate search calls, we just tell the Gemini model to use the file_search tool and point it to our store name. When the model needs more information, it will automatically search the store, pull the most relevant chunks, and ground its response on that content. The print(file_search) line simply shows the tool configuration so you can confirm everything is set up correctly.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">file_search</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Tool</span><span class="p">(</span>
+<span class="n">file_search</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FileSearch</span><span class="p">(</span>
+    <span class="n">file_search_store_names</span><span class="o">=</span><span class="p">[</span><span class="n">file_search_store_name</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">file_search</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>We’re now telling Gemini to resolve the question by first querying the File Search store we configured earlier. Under the hood, the model generates a retrieval query, File Search fetches the most relevant chunks from the indexed PDF, and those chunks are injected into the model’s context before decoding the final answer.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+<span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-2.5-flash&quot;</span><span class="p">,</span>
+<span class="n">contents</span><span class="o">=</span><span class="s2">&quot;What kind of cells does the Cisco IP DECT 6800 Phone products support?&quot;</span><span class="p">,</span>
+<span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">file_search</span><span class="p">],</span>
+<span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model response:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You can have at most 10 File Search stores per project, so it’s a good idea to delete any stores you no longer need once you’re done with development.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting File Search store...&quot;</span><span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">file_search_stores</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+    <span class="n">file_search_store_name</span><span class="o">=</span><span class="n">file_search_store_name</span><span class="p">,</span>
+    <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># force deletion even if there are files attached</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File Search store deleted.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<p><b>SUMMARY</b><br>
+You’ve effectively built a complete, managed RAG pipeline using Gemini File Search. You created a File Search store, uploaded and indexed a PDF, waited for the embeddings and index to be built, then wired that store into a file_search tool and attached it to a generate_content call. From that point on, Gemini handled retrieval for you, it converted your question into an embedding, semantically searched your File Search store, pulled the most relevant chunks, and grounded its answer on your document without you ever manually fetching or passing chunks yourself. This is exactly what the File Search tool is designed for a simple, integrated way to ground Gemini on your own data so you can focus on prompts and product logic instead of building and maintaining your own vector database and RAG stack.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+</details>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Omer Ilyas - Technical Marketing Engineer - oilyas@cisco.com
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/omerilyas4ccie/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.tabs.sticky", "navigation.indexes", "navigation.instant", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": false, "openEffect": "fade", "closeEffect": "fade", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
