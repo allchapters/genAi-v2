@@ -732,7 +732,7 @@
 <ul>
 <li>Install relevant libraries including <a href="https://unstructured.io/" target="_blank">Unstructured</a> . Unstructured will partition PDF files by first removing all embedded image blocks. Then it will use a layout model (YOLOX) to get bounding boxes (for tables) as well as titles.</li>
 </ul>
-<p><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;unstructured[all-docs]&quot;</span> <span class="n">pillow</span> <span class="n">pydantic</span> <span class="n">lxml</span> <span class="n">matplotlib</span> <span class="n">langchain</span> <span class="n">langchain_community</span> <span class="n">chromadb</span> <span class="n">langchain</span><span class="o">-</span><span class="n">experimental</span> <span class="n">langchain_openai</span>
+<p><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;unstructured[all-docs]&quot;</span> <span class="n">pillow</span> <span class="n">pydantic</span> <span class="n">lxml</span> <span class="n">matplotlib</span> <span class="n">langchain</span> <span class="n">langchain_community</span> <span class="n">chromadb</span> <span class="n">langchain</span><span class="o">-</span><span class="n">experimental</span> <span class="n">langchain_openai</span> <span class="n">langchain</span><span class="o">-</span><span class="n">text</span><span class="o">-</span><span class="n">splitters</span>
 </code></pre></div></td></tr></table></div>
 <a class="glightbox" href="../assets/task6/unstr.png" data-type="image" data-width="100%" data-height="auto" data-title="unstrc" data-desc-position="top"><img alt="unstrc" src="../assets/task6/unstr.png" /></a></p>
 <div class="admonition note">
@@ -769,7 +769,7 @@
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;NLTK_DATA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/root/nltk_data&#39;</span>
 </code></pre></div></td></tr></table></div>
 <ul>
-<li>Let's make sure we have nltk version 3.9.1 installed</li>
+<li>Let's make sure we have nltk version 3.9.1 or 3.9.2 installed</li>
 </ul>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">nltk</span>
 </code></pre></div></td></tr></table></div>
@@ -983,16 +983,14 @@ nltk.download(&#39;averaged_perceptron_tagger_eng&#39;)
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.chat_models</span> <span class="kn">import</span> <span class="n">ChatVertexAI</span>
-<span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">VertexAI</span>
-<span class="kn">from</span> <span class="nn">langchain.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
-<span class="kn">from</span> <span class="nn">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_core.output_parsers</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+<span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
 <span class="kn">from</span> <span class="nn">langchain_core.messages</span> <span class="kn">import</span> <span class="n">AIMessage</span>
 <span class="kn">from</span> <span class="nn">langchain_core.runnables</span> <span class="kn">import</span> <span class="n">RunnableLambda</span>
 <span class="kn">from</span> <span class="nn">langchain_core.output_parsers</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
 <span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
 <span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">ChatOpenAI</span>
+
 
 <span class="c1"># Generate summaries of text elements</span>
 <span class="k">def</span> <span class="nf">generate_text_summaries</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span> <span class="n">summarize_texts</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
