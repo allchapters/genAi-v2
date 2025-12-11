@@ -1157,7 +1157,466 @@ nltk.download(&#39;averaged_perceptron_tagger_eng&#39;)
 </div>
 <p><a class="glightbox" href="../assets/task6/sum1.png" data-type="image" data-width="100%" data-height="auto" data-title="Sum1" data-desc-position="top"><img alt="Sum1" src="../assets/task6/sum1.png" /></a></p>
 <p><a class="glightbox" href="../assets/task6/sum2.png" data-type="image" data-width="100%" data-height="auto" data-title="Sum2" data-desc-position="top"><img alt="Sum2" src="../assets/task6/sum2.png" /></a></p>
+<ul>
+<li>Let's now create our MultiVector Retriever and RAG system - incl storing summary embeddings in Vector DB. Lets jump to "Create our MultiVector Retriever" tab</li>
+</ul>
+<p><a class="glightbox" href="../assets/task6/sum3.png" data-type="image" data-width="100%" data-height="auto" data-title="Sum3" data-desc-position="top"><img alt="Sum3" src="../assets/task6/sum3.png" /></a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Create our MultiVector Retriever</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>While on the same notebook, let's install packages for chroma, our in-memory db and MultiVectorRetriever</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">qU</span> <span class="n">langchain</span><span class="o">-</span><span class="n">classic</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">langchain_classic.retrievers</span> <span class="kn">import</span> <span class="n">MultiVectorRetriever</span>   
+<span class="kn">from</span> <span class="nn">langchain_core.stores</span> <span class="kn">import</span> <span class="n">InMemoryStore</span>                 
+<span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">Chroma</span>
+<span class="kn">from</span> <span class="nn">langchain_core.documents</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">langchain</span><span class="o">-</span><span class="n">chroma</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>Let's create our function to build a multi-vector retriever. We will use OpenAI embeddings and create a Chroma vector store to index our summaries. This function will allow us to index summaries of texts, tables, and images, while retrieving the raw data (texts, tables, or images) based on those summaries. By leveraging the OpenAI embeddings, our Chroma vector store will effectively handle and retrieve multimodal content.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="c1"># use langchain_classic for MultiVectorRetriever</span>
+<span class="kn">from</span> <span class="nn">langchain_classic.retrievers</span> <span class="kn">import</span> <span class="n">MultiVectorRetriever</span>
+
+<span class="c1"># use langchain_core for Document + InMemoryStore</span>
+<span class="kn">from</span> <span class="nn">langchain_core.documents</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">langchain_core.stores</span> <span class="kn">import</span> <span class="n">InMemoryStore</span>
+
+<span class="c1"># vector store + embeddings</span>
+<span class="kn">from</span> <span class="nn">langchain_chroma</span> <span class="kn">import</span> <span class="n">Chroma</span>
+<span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>
+
+<span class="k">def</span> <span class="nf">create_multi_vector_retriever</span><span class="p">(</span>
+    <span class="n">vectorstore</span><span class="p">,</span> <span class="n">text_summaries</span><span class="p">,</span> <span class="n">texts</span><span class="p">,</span> <span class="n">table_summaries</span><span class="p">,</span> <span class="n">tables</span><span class="p">,</span> <span class="n">image_summaries</span><span class="p">,</span> <span class="n">images</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create retriever that indexes summaries, but returns raw images or texts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the storage layer</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStore</span><span class="p">()</span>
+    <span class="n">id_key</span> <span class="o">=</span> <span class="s2">&quot;doc_id&quot;</span>
+
+    <span class="c1"># Create the multi-vector retriever</span>
+    <span class="n">retriever</span> <span class="o">=</span> <span class="n">MultiVectorRetriever</span><span class="p">(</span>
+        <span class="n">vectorstore</span><span class="o">=</span><span class="n">vectorstore</span><span class="p">,</span>
+        <span class="n">docstore</span><span class="o">=</span><span class="n">store</span><span class="p">,</span>
+        <span class="n">id_key</span><span class="o">=</span><span class="n">id_key</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Helper function to add documents to the vectorstore and docstore</span>
+    <span class="k">def</span> <span class="nf">add_documents</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">doc_summaries</span><span class="p">,</span> <span class="n">doc_contents</span><span class="p">):</span>
+        <span class="n">doc_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">doc_contents</span><span class="p">]</span>
+        <span class="n">summary_docs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="n">id_key</span><span class="p">:</span> <span class="n">doc_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc_summaries</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">retriever</span><span class="o">.</span><span class="n">vectorstore</span><span class="o">.</span><span class="n">add_documents</span><span class="p">(</span><span class="n">summary_docs</span><span class="p">)</span>
+        <span class="n">retriever</span><span class="o">.</span><span class="n">docstore</span><span class="o">.</span><span class="n">mset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">doc_ids</span><span class="p">,</span> <span class="n">doc_contents</span><span class="p">)))</span>
+
+    <span class="c1"># Add texts, tables, and images</span>
+    <span class="c1"># Check that text_summaries is not empty before adding</span>
+    <span class="k">if</span> <span class="n">text_summaries</span><span class="p">:</span>
+        <span class="n">add_documents</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">text_summaries</span><span class="p">,</span> <span class="n">texts</span><span class="p">)</span>
+    <span class="c1"># Check that table_summaries is not empty before adding</span>
+    <span class="k">if</span> <span class="n">table_summaries</span><span class="p">:</span>
+        <span class="n">add_documents</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">table_summaries</span><span class="p">,</span> <span class="n">tables</span><span class="p">)</span>
+    <span class="c1"># Check that image_summaries is not empty before adding</span>
+    <span class="k">if</span> <span class="n">image_summaries</span><span class="p">:</span>
+        <span class="n">add_documents</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">image_summaries</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">retriever</span>
+
+<span class="c1"># The vectorstore to use to index the summaries</span>
+<span class="n">vectorstore</span> <span class="o">=</span> <span class="n">Chroma</span><span class="p">(</span>
+    <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;mm_ai_lab_cl&quot;</span><span class="p">,</span>
+    <span class="n">embedding_function</span><span class="o">=</span><span class="n">OpenAIEmbeddings</span><span class="p">(),</span>
+    <span class="c1"># embedding_function=VertexAIEmbeddings(model_name=&quot;textembedding-gecko@latest&quot;),</span>
+<span class="p">)</span>
+
+<span class="c1"># Create retriever</span>
+<span class="n">retriever_multi_vector_img</span> <span class="o">=</span> <span class="n">create_multi_vector_retriever</span><span class="p">(</span>
+    <span class="n">vectorstore</span><span class="p">,</span>
+    <span class="n">text_summaries</span><span class="p">,</span>
+    <span class="n">texts</span><span class="p">,</span>
+    <span class="n">table_summaries</span><span class="p">,</span>
+    <span class="n">tables</span><span class="p">,</span>
+    <span class="n">image_summaries</span><span class="p">,</span>
+    <span class="n">img_base64_list</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">retriever_multi_vector_img</span>
+</code></pre></div></td></tr></table></div>
+<p><a class="glightbox" href="../assets/task6/sum31.png" data-type="image" data-width="100%" data-height="auto" data-title="Sum31" data-desc-position="top"><img alt="Sum31" src="../assets/task6/sum31.png" /></a></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:1"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Create our RAG (Multimodal)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>Let's create a multi_modal_rag_chain(retriever). This pipeline integrates both text and image data to enhance the quality of responses generated by an AI model</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">PILImage</span>
+<span class="kn">from</span> <span class="nn">langchain_core.runnables</span> <span class="kn">import</span> <span class="n">RunnableLambda</span><span class="p">,</span> <span class="n">RunnablePassthrough</span>
+
+
+
+<span class="k">def</span> <span class="nf">looks_like_base64</span><span class="p">(</span><span class="n">sb</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string looks like base64&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^[A-Za-z0-9+/]+[=]{0,2}$&quot;</span><span class="p">,</span> <span class="n">sb</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">def</span> <span class="nf">is_image_data</span><span class="p">(</span><span class="n">b64data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the base64 data is an image by looking at the start of the data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image_signatures</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\xFF\xD8\xFF</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x89\x50\x4E\x47\x0D\x0A\x1A\x0A</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;png&quot;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x47\x49\x46\x38</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;gif&quot;</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x52\x49\x46\x46</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;webp&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64data</span><span class="p">)[:</span><span class="mi">8</span><span class="p">]</span>  <span class="c1"># Decode and get the first 8 bytes</span>
+        <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="nb">format</span> <span class="ow">in</span> <span class="n">image_signatures</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">sig</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span> <span class="nf">resize_base64_image</span><span class="p">(</span><span class="n">base64_string</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resize an image encoded as a Base64 string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Decode the Base64 string</span>
+    <span class="n">img_data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">base64_string</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">img_data</span><span class="p">))</span>
+
+    <span class="c1"># Resize the image</span>
+    <span class="n">resized_img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">LANCZOS</span><span class="p">)</span>
+
+    <span class="c1"># Save the resized image to a bytes buffer</span>
+    <span class="n">buffered</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">resized_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffered</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+
+    <span class="c1"># Encode the resized image to Base64</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">buffered</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">split_image_text_types</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Split base64-encoded images and texts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b64_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+        <span class="c1"># Check if the document is of type Document and extract page_content if so</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">page_content</span>
+        <span class="k">if</span> <span class="n">looks_like_base64</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_image_data</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">resize_base64_image</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+            <span class="n">b64_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b64_images</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">b64_images</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;texts&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">b64_images</span><span class="p">,</span> <span class="s2">&quot;texts&quot;</span><span class="p">:</span> <span class="n">texts</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">img_prompt_func</span><span class="p">(</span><span class="n">data_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Join the context into a single string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formatted_texts</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">][</span><span class="s2">&quot;texts&quot;</span><span class="p">])</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Adding the text for analysis</span>
+    <span class="n">text_message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;You are an AI scientist tasking with providing factual answers.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;You will be given a mixed of text, tables, and image(s) usually of charts or graphs.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Use this information to provide answers related to the user question. </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;User-provided question: </span><span class="si">{</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Text and / or tables:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formatted_texts</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_message</span><span class="p">)</span>
+    <span class="c1"># Adding image(s) to the messages if present</span>
+    <span class="k">if</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">][</span><span class="s2">&quot;images&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">][</span><span class="s2">&quot;images&quot;</span><span class="p">]:</span>
+            <span class="n">image_message</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;image_url&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;image_url&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/jpeg;base64,</span><span class="si">{</span><span class="n">image</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+            <span class="p">}</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">messages</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">multi_modal_rag_chain</span><span class="p">(</span><span class="n">retriever</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multi-modal RAG chain</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+
+    <span class="c1"># RAG pipeline</span>
+    <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">retriever</span> <span class="o">|</span> <span class="n">RunnableLambda</span><span class="p">(</span><span class="n">split_image_text_types</span><span class="p">),</span>
+            <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="o">|</span> <span class="n">RunnableLambda</span><span class="p">(</span><span class="n">img_prompt_func</span><span class="p">)</span>
+        <span class="o">|</span> <span class="n">model</span>
+        <span class="o">|</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">chain</span>
+
+<span class="c1"># Create RAG chain</span>
+<span class="n">chain_multimodal_rag</span> <span class="o">=</span> <span class="n">multi_modal_rag_chain</span><span class="p">(</span><span class="n">retriever_multi_vector_img</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition challenge">
+<p class="admonition-title">Challenge</p>
+<p>Let's Query our Multimodal Retriever</p>
+</div>
+<ul>
+<li>Open your CX-Essentials.pdf, and let's try querying some information from it.</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;how can I Upgrade call queue from Customer Experience Basic to Customer Experience Essentials. explain images if any there as well&quot;&quot;&quot;</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">chain_multimodal_rag</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;how can I Assign Customer Experience Essentials license to users&quot;&quot;&quot;</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">retriever_multi_vector_img</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># To display the image</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">looks_like_base64</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_image_data</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+        <span class="n">image_data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">image_data</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>You'll notice that in our multimodal RAG system, I'm now able to retrieve images, tables, and text seamlessly.</li>
+</ul>
+<p><a class="glightbox" href="../assets/task6/yy.png" data-type="image" data-width="100%" data-height="auto" data-title="Sumaryyyy" data-desc-position="top"><img alt="Sumaryyyy" src="../assets/task6/yy.png" /></a></p>
 <p><p align="right"> 👉 This concludes the task. Click the <strong>"GenAI- Frameworks"</strong> Task on the left. </p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
